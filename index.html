@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Weekend Agent · concept prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#000; --ink2:#4a4a4a; --ink3:#757575; --line:#e3e3e3; --bg:#f2f2f2; --card:#fff;
+  --brand:#008cff; --brand-soft:#eaf5ff; --navy:#0b2a5b;
+  --grad:linear-gradient(90deg,#53b2fe 0%,#065af3 100%);
+  --aigrad:linear-gradient(100deg,#7fd0ff 0%,#2f7bf0 45%,#0a1f6b 100%);
+  --travel:#008cff; --stay:#f5803e; --do:#12a08a; --left:#dfe3ea;
+  --bad:#eb2026; --bad-soft:#fdeeee; --good:#0f8a78; --good-soft:#e6f6f3;
+  --r:20px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:Lato,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:#d9dce2;-webkit-font-smoothing:antialiased}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:left}
+button:focus-visible,textarea:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+.stage{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:20px}
+.phone{position:relative;width:390px;height:min(844px,calc(100vh - 70px));background:var(--bg);border-radius:36px;overflow:hidden;box-shadow:0 30px 80px rgba(20,25,40,.28),0 0 0 10px #111}
+.stage-note{font-size:12px;color:#555}
+.embed .stage{padding:0;display:block;height:100%}.embed .phone{width:100%;height:100%;border-radius:0;box-shadow:none}.embed .stage-note{display:none}.embed .view{animation:none}.embed #app{scroll-behavior:auto}
+#app{height:100%;overflow-y:auto;overflow-x:hidden;scroll-behavior:smooth;scrollbar-width:none}
+#app::-webkit-scrollbar{display:none}
+@media (max-width:480px){
+  .stage{padding:0;display:block;height:100%}
+  .phone{width:100%;height:100%;border-radius:0;box-shadow:none}
+  .stage-note{display:none}
+}
+.view{min-height:100%;display:flex;flex-direction:column;animation:in .28s ease both}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.pad{padding:16px}
+h1{font-size:23px;line-height:1.2;font-weight:900;letter-spacing:-.01em}
+h2{font-size:19px;font-weight:900;color:var(--ink);margin:22px 0 10px}
+.muted{color:var(--ink2)} .small{font-size:14px} .tiny{font-size:12px}
+.card{background:var(--card);border-radius:var(--r);padding:16px}
+.btn{display:block;width:100%;text-align:center;background:var(--grad);color:#fff;font-weight:900;font-size:16px;letter-spacing:.01em;text-transform:uppercase;padding:15px;border-radius:10px;transition:transform .1s,opacity .2s;box-shadow:0 2px 6px rgba(6,90,243,.25)}
+.btn:active{transform:scale(.98)} .btn[disabled]{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.ghost{background:#fff;color:var(--brand);border:1px solid var(--brand);box-shadow:none}
+
+/* detail header: white bar, arrow, heavy title */
+.topbar{display:flex;align-items:center;gap:14px;padding:16px 18px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.12);position:sticky;top:0;z-index:5}
+.back{font-size:24px;line-height:1;color:var(--ink2);width:28px;text-align:center}
+.topbar b{display:block;font-size:19px;font-weight:900} .topbar span{font-size:13px;color:var(--ink3)}
+
+/* home */
+.home{background:var(--bg)}
+.hero{background:linear-gradient(180deg,#fbd9c0 0%,#fde9d9 55%,#f2f2f2 100%);padding:16px 18px 54px;position:relative;overflow:hidden}
+.hero::before,.hero::after{content:"";position:absolute;bottom:40px;width:120px;height:150px;opacity:.35;background:linear-gradient(180deg,#f0b48c,transparent);clip-path:polygon(50% 0,58% 40%,75% 100%,25% 100%,42% 40%)}
+.hero::before{left:6px} .hero::after{right:6px;clip-path:polygon(45% 0,55% 0,60% 100%,40% 100%)}
+.herobar{display:flex;align-items:center;gap:16px;position:relative;z-index:1}
+.burger{display:grid;gap:4px;width:20px} .burger i{height:2px;background:#333;border-radius:2px} .burger i:last-child{width:70%}
+.mycash{font-weight:900;font-size:16px} .mycash i,.mybiz i{font-family:"Brush Script MT","Segoe Script",cursive;font-style:italic;font-weight:400;margin-right:1px}
+.mybiz{font-weight:900;font-size:13px;color:#eb2026}
+.banner{position:relative;z-index:1;text-align:center;padding:22px 0 6px}
+.banner small{display:block;color:#7a1f4e;font-weight:900;letter-spacing:.14em;font-size:12px}
+.banner b{display:inline-block;margin:8px 0;font-size:34px;line-height:1;font-weight:900;color:#fff;background:linear-gradient(180deg,#e2303a,#b3121f);padding:10px 20px 12px;border-radius:14px;transform:rotate(-3deg);box-shadow:0 4px 0 #1c3fa8,0 10px 20px rgba(0,0,0,.18);text-shadow:0 2px 0 rgba(0,0,0,.2)}
+.banner span{display:block;font-size:14px;color:#4a2a1a;margin-top:10px;font-weight:700}
+.aiwrap{margin:-40px 14px 0;position:relative;z-index:2}
+.aibox{display:flex;align-items:flex-end;gap:8px;background:#fff;border-radius:22px;padding:14px 12px 14px 18px;border:4px solid transparent;background:linear-gradient(#fff,#fff) padding-box,var(--aigrad) border-box;box-shadow:0 8px 24px rgba(11,42,91,.18)}
+.aibox textarea{flex:1;border:0;outline:0;resize:none;font:inherit;font-size:17px;color:var(--ink);background:none;min-height:48px;line-height:1.35}
+.aibox textarea::placeholder{color:#8a8a8a}
+.orb{flex:none;width:46px;height:46px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#3d8bff 0%,#0d2a8a 55%,#050b2e 100%);color:#fff;display:grid;place-items:center;font-size:20px;text-align:center;box-shadow:0 0 0 3px rgba(83,178,254,.25),0 4px 10px rgba(5,11,46,.4);transition:transform .15s}
+.orb:active{transform:scale(.92)}
+.shead{display:flex;justify-content:space-between;align-items:center;padding:22px 18px 10px}
+.shead b{font-size:20px;font-weight:900} .shead span{font-size:15px;font-weight:700;color:var(--brand)}
+.starters{display:grid;gap:8px;padding:0 14px}
+.starter{display:flex;gap:10px;align-items:center;background:linear-gradient(90deg,#fff 40%,#dcebff 100%);border:1px solid #e6eef9;border-radius:14px;padding:13px 14px;font-size:15px;font-weight:700;transition:transform .1s}
+.starter:active{transform:scale(.98)}
+.spk{flex:none;color:#0b5cff;font-size:15px;line-height:1.3}
+.btiles{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:18px 14px 8px}
+.btile{background:#fff;border-radius:18px;padding:14px 4px 12px;text-align:center}
+.btile i{display:block;font-style:normal;font-size:30px;line-height:1.1;margin-bottom:6px}
+.btile b{font-size:14px;font-weight:900;line-height:1.15;display:block}
+.sgrid{position:relative;background:#fff;border-radius:18px;margin:0 14px 26px;padding:16px 6px 10px;display:grid;grid-template-columns:repeat(4,1fr);row-gap:14px}
+.sgrid::after{content:"⌄";position:absolute;left:50%;bottom:-16px;transform:translateX(-50%);width:84px;height:20px;background:#fff;border-radius:0 0 16px 16px;text-align:center;color:var(--brand);font-weight:900;line-height:12px}
+.stile{text-align:center;position:relative;padding:0 2px}
+.stile i{display:block;font-style:normal;font-size:26px;margin-bottom:4px}
+.stile span{font-size:12.5px;line-height:1.2;display:block;color:#222}
+.stile em,.newtag{font-style:normal;font-size:10px;font-weight:900;color:#fff;background:linear-gradient(90deg,#a63de0,#eb2a5c);border-radius:6px;padding:0 5px}
+.stile em{position:absolute;top:-6px;left:50%;transform:translateX(-50%)}
+.center{text-align:center}
+.nav{position:sticky;bottom:0;margin-top:auto;display:grid;grid-template-columns:repeat(5,1fr);align-items:end;background:#fff;border-radius:18px 18px 0 0;box-shadow:0 -2px 10px rgba(0,0,0,.08);padding:8px 4px calc(10px + env(safe-area-inset-bottom));z-index:3}
+.nav div{text-align:center;font-size:12px;color:#757575;position:relative}
+.nav div i{display:block;font-style:normal;font-size:20px;filter:grayscale(1);opacity:.7}
+.nav div.on{color:var(--brand);font-weight:900} .nav div.on i{filter:none;opacity:1}
+.nav div.on::before{content:"";position:absolute;top:-8px;left:22%;right:22%;height:3px;background:var(--brand);border-radius:0 0 3px 3px}
+.nav .orb{width:54px;height:54px;margin:-22px auto 0;font-size:24px}
+
+/* planning */
+.steps{display:flex;flex-direction:column;gap:10px;margin-top:22px}
+.step{display:flex;gap:12px;align-items:flex-start;animation:in .3s ease both;background:linear-gradient(90deg,#fff 40%,#e3efff 100%);border:1px solid #e6eef9;border-radius:14px;padding:12px 14px}
+.dot{flex:none;width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-size:12px;margin-top:1px}
+.step.run .dot{border-color:var(--brand);border-top-color:transparent;animation:spin .7s linear infinite}
+.step.done .dot{background:var(--good);border-color:var(--good);color:#fff}
+.step.drop{background:#fff} .step.drop .dot{background:var(--bg);border-color:var(--line);color:var(--ink3)}
+.step p{font-size:15px;line-height:1.35;font-weight:700} .step small{display:block;color:var(--ink2);font-size:13px;margin-top:2px;font-weight:400}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* listing (options) */
+.lhead{background:#fff;padding:12px 16px 0}
+.lbox{display:flex;align-items:center;gap:10px;background:#f2f2f2;border:1px solid #d8d8d8;border-radius:10px;padding:8px 12px}
+.lbox .back{width:26px} .lbox .lt{flex:1;min-width:0;border-right:1px solid #cfcfcf}
+.lbox .lt b{display:block;font-weight:900;font-size:16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lbox .lt span{font-size:13px;color:var(--ink2)}
+.pen{color:var(--brand);font-size:18px;padding:0 4px}
+.fchips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.08);scrollbar-width:none;position:sticky;top:0;z-index:4}
+.fchips span{flex:none;border:1px solid #d0d0d0;border-radius:10px;padding:8px 12px;font-size:14px;color:#333;white-space:nowrap}
+.fchips span.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand);font-weight:900}
+.lh{font-size:19px;font-weight:900}
+.opt{display:block;width:100%;margin-bottom:14px;transition:transform .1s}
+.opt:active{transform:scale(.985)}
+.lcard{background:#fff;border-radius:20px;overflow:hidden}
+.photo{position:relative;height:150px}
+.ph-gokarna{background:linear-gradient(180deg,#3b2d6b 0%,#c0567a 38%,#f6a55c 58%,#2b7d8c 59%,#1c5f6f 78%,#d9b382 79%)}
+.ph-pondy{background:linear-gradient(180deg,#7fc4f2 0%,#cdeaf9 45%,#f4c84a 46%,#e8b62f 72%,#8a8f96 73%,#70757c 100%)}
+.ph-goa{background:linear-gradient(180deg,#58b7ea 0%,#bfe6f5 40%,#2f9a54 41%,#237a41 55%,#35b6b0 56%,#2a97a0 78%,#ecd5a1 79%)}
+.photo::after{content:"";position:absolute;inset:0;background:radial-gradient(circle at 70% 28%,rgba(255,255,255,.55) 0 18px,transparent 19px)}
+.ptag{position:absolute;left:0;top:14px;z-index:1;background:#fff;border:1px solid #d9b56b;border-left:0;border-radius:0 6px 6px 0;padding:3px 9px;font-size:12px;font-weight:900}
+.pfit{position:absolute;right:12px;top:12px;z-index:1;background:rgba(30,30,60,.72);color:#fff;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700}
+.pfit.bad{background:var(--bad)}
+.pdots{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:1;background:#fff;border-radius:8px 8px 0 0;padding:4px 10px 2px;display:flex;gap:4px}
+.pdots i{width:4px;height:4px;border-radius:50%;background:#333} .pdots i:first-child{background:var(--brand)}
+.lbody{padding:12px 14px 14px}
+.lrow{display:flex;justify-content:space-between;gap:10px}
+.lname{display:block;font-size:21px;font-weight:900}
+.lloc{display:block;font-size:14px;color:#333;margin:3px 0 6px}
+.perk{font-size:14px;color:var(--good);margin-top:4px}
+.lprice{text-align:right;flex:none}
+.lprice b{display:block;font-size:21px;font-weight:900;white-space:nowrap}
+.lprice span{display:block;font-size:12.5px;color:var(--ink3);margin-top:2px}
+.mini{display:flex;height:8px;border-radius:99px;overflow:hidden;margin:12px 0 10px;background:var(--left)}
+.mini span{display:block;height:100%}
+.insight{display:flex;gap:8px;background:#f1f5fb;border-radius:12px;padding:9px 12px;font-size:14px;line-height:1.35;color:#0b3a8a}
+.pill{display:inline-block;font-size:12px;font-weight:900;padding:4px 10px;border-radius:99px;white-space:nowrap}
+.pill.ok{background:var(--good-soft);color:var(--good)} .pill.bad{background:var(--bad-soft);color:var(--bad)}
+.pill.pick{background:var(--brand-soft);color:var(--brand)}
+.row{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+
+/* plan */
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px 4px;scrollbar-width:none}
+.chips::-webkit-scrollbar,.fchips::-webkit-scrollbar{display:none}
+.chip{flex:none;background:#fff;border:1px solid #d0d0d0;border-radius:10px;padding:8px 12px;font-size:14px;white-space:nowrap}
+.chip u{text-decoration:none;color:var(--brand);margin-left:6px}
+.budget{margin:10px 14px 0}
+.budget .head{display:flex;justify-content:space-between;align-items:flex-end;gap:8px}
+.budget .amt{font-size:28px;font-weight:900;font-variant-numeric:tabular-nums}
+.budget .amt small{font-size:14px;font-weight:400;color:var(--ink3)}
+.bar{position:relative;height:62px;margin:30px 0 2px;touch-action:none;user-select:none}
+.track{position:absolute;left:0;right:0;top:0;height:46px;border-radius:14px;background:repeating-linear-gradient(135deg,#f0f2f6 0 6px,#e6e9ef 6px 12px);overflow:hidden;box-shadow:inset 0 0 0 1px #dfe3ea}
+.seg{position:absolute;top:0;bottom:0;overflow:hidden;transition:left .28s cubic-bezier(.3,1.3,.5,1),width .28s cubic-bezier(.3,1.3,.5,1)}
+.seg.travel{background:linear-gradient(180deg,#2ea3ff,#008cff)} .seg.stay{background:linear-gradient(180deg,#f9965e,#f5803e)} .seg.do{background:linear-gradient(180deg,#24b59e,#12a08a)}
+.seg.stay,.seg.do{box-shadow:inset 2px 0 0 #fff}
+.sl{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 0 0 16px;color:#fff;white-space:nowrap;transition:opacity .15s}
+.seg.travel .sl{padding-left:9px}
+.sl em{font-style:normal;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;opacity:.88}
+.sl b{font-size:14px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.15}
+.seg.narrow .sl{opacity:0}
+.seg.compact .sl em{display:none}
+.seg.over{background:#d3d7de;box-shadow:inset 0 0 0 1px #c5cad3}
+.leftlab{position:absolute;top:0;bottom:0;display:grid;place-items:center;font-size:12px;font-weight:700;color:#66707c;white-space:nowrap;overflow:hidden;transition:left .28s,width .28s}
+.mark{position:absolute;top:-5px;height:56px;width:2px;background:#333;transition:left .28s,opacity .2s;z-index:2;border-radius:2px}
+.mark::after{content:attr(data-l);position:absolute;top:-16px;right:-2px;font-size:10px;font-weight:900;white-space:nowrap;color:#333}
+.handle{position:absolute;top:0;height:46px;width:40px;margin-left:-20px;z-index:3;cursor:ew-resize;touch-action:none;transition:left .28s cubic-bezier(.3,1.3,.5,1);display:grid;place-items:center}
+.handle::before{content:"‹›";width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.32);display:grid;place-items:center;font-size:13px;font-weight:900;color:#5b6570;letter-spacing:-1px;line-height:1;padding-bottom:2px;transition:transform .15s,color .15s}
+.handle:hover::before{transform:scale(1.1)}
+.handle.drag::before{transform:scale(1.28);color:var(--brand);box-shadow:0 4px 12px rgba(0,140,255,.45)}
+.teach .handle::before{animation:nudge 1.1s ease .8s 2}
+@keyframes nudge{0%,100%{transform:none}30%{transform:translateX(-7px)}70%{transform:translateX(7px)}}
+.tip{position:absolute;top:-28px;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:12px;font-weight:700;padding:4px 9px;border-radius:8px;white-space:nowrap;opacity:0;transition:opacity .15s,left .12s;pointer-events:none;z-index:4}
+.tip::after{content:"";position:absolute;left:50%;bottom:-4px;margin-left:-4px;border:4px solid transparent;border-top-color:var(--navy);border-bottom:0}
+.bar.dragging .tip{opacity:1}
+.ticks{position:absolute;left:0;right:0;top:52px;height:8px}
+.ticks i{position:absolute;width:6px;height:6px;margin-left:-3px;border-radius:50%;background:#c3cad5;animation:fade .2s both;transition:transform .12s,background .12s}
+.ticks i.on{background:var(--brand);transform:scale(1.5)}
+.bar.shake{animation:shake .35s}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.bar.dragging .seg,.bar.dragging .handle,.bar.dragging .mark,.bar.dragging .leftlab{transition-duration:.12s}
+.hint{font-size:12.5px;color:var(--ink3);text-align:center;transition:color .2s}
+.hint.bad{color:#b26a00;font-weight:700}
+.seg.over,.mark{display:none}
+.bar.isover .track{box-shadow:inset 0 0 0 2px #f0a92e}
+.leg.new{animation:flashw 1s ease}
+.legend{display:grid;grid-template-columns:minmax(0,1fr);gap:2px;margin-top:10px}
+.leg{display:flex;align-items:center;gap:10px;padding:8px 4px;border-radius:10px;width:100%;min-width:0}
+.leg:hover{background:var(--bg)}
+.sw{flex:none;width:10px;height:10px;border-radius:3px}
+.leg .t{flex:1;min-width:0} .leg .t b{display:block;font-size:14px;font-weight:900}
+.leg .t span{display:block;font-size:13px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.leg .p{font-weight:900;font-size:15px;font-variant-numeric:tabular-nums} .leg .c{color:var(--brand);font-weight:900}
+.leg{padding:4px 0 4px 4px} .lgo{flex:1;display:flex;align-items:center;gap:10px;min-width:0;text-align:left;padding:4px 0}
+.leg .t span.xt{white-space:normal;color:#0b5cff;font-weight:700;font-size:12.5px;margin-top:2px}
+.lk{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#9aa3ae;transition:background .15s,color .15s,transform .15s}
+.lk svg{width:17px;height:17px} .lk:hover{background:var(--bg)} .lk:active{transform:scale(.9)}
+.lk.on{color:var(--brand);background:var(--brand-soft)}
+.seg.locked .sl em::after{content:" ●";font-size:8px;vertical-align:1px}
+.seg.locked{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.14) 0 4px,transparent 4px 9px),var(--g)!important}
+.seg.travel{--g:linear-gradient(180deg,#2ea3ff,#008cff)} .seg.stay{--g:linear-gradient(180deg,#f9965e,#f5803e)} .seg.do{--g:linear-gradient(180deg,#24b59e,#12a08a)}
+.handle.locked{cursor:not-allowed} .handle.locked::before{content:"";background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%235b6570' stroke-width='2.6' stroke-linecap='round'%3E%3Crect x='5' y='11' width='14' height='10' rx='2'/%3E%3Cpath d='M8 11V8a4 4 0 0 1 8 0v3'/%3E%3C/svg%3E") center/12px no-repeat}
+.nb{flex:1;min-width:0} .narr .more{margin-top:6px} .narr .more button{color:#0b5cff;font-weight:900;font-size:13px}
+.narr .more p{font-size:13px;color:#33507f;margin-top:6px;line-height:1.45}
+.snack{display:flex;align-items:center;gap:10px;background:var(--navy);color:#fff;border-radius:12px;padding:10px 12px 10px 14px;font-size:13.5px;margin-bottom:10px;animation:snackin .25s cubic-bezier(.3,1.3,.5,1)}
+.snack span{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .snack button{color:#7cc4ff;font-weight:900;font-size:14px;padding:2px 4px}
+.snack i{flex:none;width:22px;height:22px;border-radius:50%;background:conic-gradient(#7cc4ff var(--p,100%),rgba(255,255,255,.18) 0);-webkit-mask:radial-gradient(circle,transparent 7px,#000 8px);mask:radial-gradient(circle,transparent 7px,#000 8px)}
+@keyframes snackin{from{transform:translateY(12px);opacity:0}}
+.split{font-size:15px;display:flex;justify-content:space-between;padding-top:8px;color:var(--ink2)} .split b{color:var(--ink);font-variant-numeric:tabular-nums}
+.aside{margin-top:12px;background:#f1f7ff;border:1px dashed #9cc7ff;border-radius:14px;padding:12px 14px}
+.aside b{font-size:14.5px;font-weight:900;display:block} .aside p{font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.4}
+.aside .ar{display:flex;justify-content:space-between;font-size:13.5px;margin-top:8px} .aside .ar span:last-child{font-weight:900;font-variant-numeric:tabular-nums}
+.fresh{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;color:var(--ink3);margin-top:8px;padding-top:10px;border-top:1px solid var(--line)}
+.fresh button{color:var(--brand);font-weight:900} .fresh.err{color:var(--bad)}
+.shimmer .p,.shimmer .amt{animation:pulse .7s ease infinite alternate}
+@keyframes pulse{to{opacity:.3}}
+.narr{margin:12px 14px 0;display:flex;gap:8px;align-items:flex-start;font-size:14.5px;line-height:1.4;background:#f1f5fb;border-radius:14px;padding:11px 14px;color:#0b3a8a}
+.narr .spark{flex:none;color:#0b5cff;font-size:16px;line-height:1.3}
+.narr.flash{animation:flash .9s ease}
+@keyframes flash{0%{background:#cfe3ff}100%{background:#f1f5fb}}
+.fix{margin:12px 14px 0;background:#fff;border:1px solid #f3c2c3;border-radius:var(--r);padding:16px}
+.fix>b{color:var(--bad);font-size:17px;font-weight:900} .fix .list{display:grid;gap:10px;margin-top:12px}
+.fixbtn{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;background:linear-gradient(90deg,#fff 40%,#dcebff 100%);border:1px solid #e6eef9;border-radius:14px;padding:12px 14px;font-size:15px;font-weight:900}
+.fixbtn span{font-size:12.5px;color:var(--ink2);display:block;font-weight:400;margin-top:2px}
+.fixbtn .pill{font-weight:900}
+.day{margin:0 14px}
+.item{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .time{flex:none;width:58px;font-size:12.5px;color:var(--ink3);padding-top:2px}
+.item .body{flex:1;min-width:0} .item .body b{font-size:16px;font-weight:900;display:block}
+.item .body span{font-size:13.5px;color:var(--ink2)}
+.item .acts{display:flex;gap:16px;margin-top:6px}
+.item .acts button{font-size:13.5px;font-weight:900;color:var(--brand)}
+.item .why{font-size:13.5px;color:#0b3a8a;background:#f1f5fb;border-radius:12px;padding:9px 12px;margin-top:8px;line-height:1.4}
+.item .bar3{flex:none;width:3px;border-radius:3px}
+.item.new{animation:flashw 1s ease}
+@keyframes flashw{0%{background:#eaf5ff}100%{background:transparent}}
+.foot{position:sticky;bottom:0;margin-top:auto;padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#fff;box-shadow:0 -2px 8px rgba(0,0,0,.08);z-index:3}
+
+/* sheet */
+#sheet{position:absolute;inset:0;z-index:20;display:none}
+#sheet.open{display:block}
+.scrim{position:absolute;inset:0;background:rgba(0,0,0,.4);animation:fade .2s both}
+@keyframes fade{from{opacity:0}}
+.panel{position:absolute;left:0;right:0;bottom:0;background:#fff;border-radius:28px 28px 0 0;padding:10px 20px 24px;max-height:84%;overflow-y:auto;animation:up .26s cubic-bezier(.2,.9,.3,1) both}
+@keyframes up{from{transform:translateY(100%)}}
+.grab{width:42px;height:4px;border-radius:4px;background:#d4d4d4;margin:0 auto 16px}
+.tier{display:block;width:100%;background:linear-gradient(90deg,#fff 40%,#dcebff 100%);border:1px solid #e6eef9;border-radius:14px;padding:13px 14px;margin-top:12px;transition:border-color .15s}
+.tier.on{border-color:var(--brand);box-shadow:inset 0 0 0 1px var(--brand);background:var(--brand-soft)}
+.tier[disabled]{opacity:.5;cursor:not-allowed}
+.tier b{font-size:16px;font-weight:900} .tier p{font-size:13.5px;color:var(--ink2);margin-top:3px;line-height:1.35}
+.tier .d{font-weight:900;font-size:15px;white-space:nowrap}
+.tier .after{margin-top:8px}
+
+/* approve */
+.sum{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid var(--line)}
+.sum:last-of-type{border-bottom:0}
+.sum .t{flex:1} .sum .t b{display:block;font-size:16px;font-weight:900} .sum .t span{font-size:13.5px;color:var(--ink2);display:block;margin-top:2px}
+.sum .t span:last-child{color:var(--good)}
+.sum .p{font-weight:900;font-variant-numeric:tabular-nums}
+.totalrow{display:flex;justify-content:space-between;font-size:19px;font-weight:900;padding-top:14px;margin-top:4px;border-top:1px solid var(--line)}
+.alert{background:#fff;border:1px solid #f3d08a;border-radius:var(--r);padding:16px;margin-bottom:12px}
+.alert>b{display:block;margin-bottom:4px;font-size:17px;font-weight:900}
+.spinner{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand);animation:spin .7s linear infinite;margin:0 auto 12px}
+.bigtick{width:64px;height:64px;border-radius:50%;background:var(--good);color:#fff;display:grid;place-items:center;font-size:30px;margin:30px auto 16px;animation:pop .4s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes pop{from{transform:scale(.4);opacity:0}}
+#toast{position:absolute;left:16px;right:16px;bottom:90px;background:#1a1a1a;color:#fff;padding:11px 14px;border-radius:12px;font-size:13px;z-index:30;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none;text-align:center}
+#toast.on{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="phone">
+    <div id="app"></div>
+    <div id="sheet"></div>
+    <div id="toast" role="status" aria-live="polite"></div>
+  </div>
+  <p class="stage-note">Concept prototype for a design exercise. Simulated AI, prices and availability. Not affiliated with any travel company.</p>
+</div>
+
+<script>
+/* ---------- data (all simulated) ---------- */
+const CATS = ['travel','stay','do'];
+const LABEL = {travel:'Getting there', stay:'Staying', do:'Food & doing'};
+const COLOR = {travel:'var(--travel)', stay:'var(--stay)', do:'var(--do)'};
+const SAT_SAVE = 600;
+
+const DEST = {
+  gokarna:{
+    name:'Gokarna', tag:'Best value', pick:[1,1,2],
+    reason:'Quiet beaches, and the overnight bus means you lose no daylight and take no leave.',
+    outFri:['9:30 pm','Overnight from Bengaluru, arrive 6:15 am'],
+    outSat:['6:00 am','Day bus from Bengaluru, arrive 2:45 pm'],
+    back:['8:00 pm','Back in Bengaluru 5:15 am Monday'],
+    cats:{
+      travel:[
+        {name:'Non-AC seater bus', detail:'Return, pushback seats', price:1700, why:'Cheapest way there. Seats recline but you will not sleep much.', keep:'Same departure time.', cancel:'Free cancellation until 6 hours before'},
+        {name:'AC sleeper bus', detail:'Return, lower berth', price:2900, why:'A flat berth means you arrive able to use Saturday. Rated 4.3 by 2,100 riders.', keep:'Same departure time, flat berth.', cancel:'Free cancellation until 6 hours before'},
+        {name:'Volvo multi-axle sleeper', detail:'Return, single berth, charging', price:3900, why:'Smoothest ride on the ghat section and a single berth, so no stranger next to you.', keep:'Single berth both ways.', cancel:'Free cancellation until 2 hours before'}
+      ],
+      stay:[
+        {name:'Saltwater Hostel', detail:'6-bed mixed dorm, 2 nights', price:1800, why:'Best-rated hostel within a 5 minute walk of Kudle beach. Lockers and a common kitchen.', keep:'Same beach, still free cancellation.', cancel:'Free cancellation until Friday noon'},
+        {name:'Kudle Beach Cottages', detail:'Private room, 2 nights', price:4600, why:'Your own room and bathroom, 2 minutes from the sand. 4.4 from 860 stays.', keep:'Private room, same beach.', cancel:'Free cancellation until Friday noon'},
+        {name:'Namaste Bay Resort', detail:'Sea-view room with breakfast, 2 nights', price:7200, why:'Sea view, breakfast included and a pool. The one real splurge available this weekend.', keep:'Breakfast included.', cancel:'Free cancellation until Thursday'}
+      ],
+      do:[
+        {name:'Beaches and local food', detail:'Om beach trek, sunset point, thali meals', price:2400, why:'The best of Gokarna is free: the beach-to-beach trek and the sunset. This covers all meals.',
+          add:[['Sat','10:00 am','Kudle to Om beach trek','Free, about 40 minutes each way',1],['Sat','5:45 pm','Sunset at Om beach rocks','Free'],['Sun','9:00 am','Slow morning at Kudle','Breakfast at a shack']]},
+        {name:'Add kayaking and a café dinner', detail:'Everything above, plus guided kayaking', price:3900, why:'Kayaking is the top-rated activity here and the Saturday 4 pm slot has space.',
+          add:[['Sat','4:00 pm','Guided kayaking at Kudle','1 hour, instructor included'],['Sat','8:00 pm','Dinner at a cliffside café','Table held for 8 pm']]},
+        {name:'Add a surf lesson and beach hop', detail:'Everything above, plus surfing and a boat', price:5600, why:'You have the budget for one standout thing. A beginner surf lesson fits Sunday morning before checkout.',
+          add:[['Sun','7:30 am','Beginner surf lesson','90 minutes, board included'],['Sun','1:00 pm','Boat hop to Paradise beach','Shared boat, back by 4 pm']]}
+      ]
+    }
+  },
+  pondy:{
+    name:'Pondicherry', tag:'Shortest trip', pick:[1,1,2],
+    reason:'Only 6.5 hours away, so you get the most actual holiday out of 48 hours. Best food of the three.',
+    outFri:['10:30 pm','Overnight from Bengaluru, arrive 5:00 am'],
+    outSat:['6:00 am','Day bus from Bengaluru, arrive 12:30 pm'],
+    back:['9:30 pm','Back in Bengaluru 4:15 am Monday'],
+    cats:{
+      travel:[
+        {name:'Non-AC seater bus', detail:'Return, pushback seats', price:1500, why:'Cheapest option on a short route, so the discomfort is brief.', keep:'Same departure time.', cancel:'Free cancellation until 6 hours before'},
+        {name:'AC sleeper bus', detail:'Return, lower berth', price:2400, why:'A flat berth for a short overnight. Rated 4.4.', keep:'Flat berth both ways.', cancel:'Free cancellation until 6 hours before'},
+        {name:'Volvo multi-axle sleeper', detail:'Return, single berth', price:3400, why:'Single berth and the smoothest ride.', keep:'Single berth both ways.', cancel:'Free cancellation until 2 hours before'}
+      ],
+      stay:[
+        {name:'Mango Tree Hostel', detail:'8-bed dorm, 2 nights', price:2200, why:'In the French Quarter, so everything is walkable.', keep:'Still in the French Quarter.', cancel:'Free cancellation until Friday noon'},
+        {name:'Villa Bougainville', detail:'Heritage room, 2 nights', price:5200, why:'A restored French house, 4 minutes from the promenade. 4.5 from 540 stays.', keep:'Private room, same neighbourhood.', cancel:'Free cancellation until Friday noon'},
+        {name:'Promenade House', detail:'Sea-facing room with breakfast, 2 nights', price:8000, why:'On the promenade itself, with breakfast.', keep:'Breakfast included.', cancel:'Free cancellation until Thursday'}
+      ],
+      do:[
+        {name:'Walks, beaches and cafés', detail:'French Quarter walk, Rock beach, café meals', price:2600, why:'Pondicherry is a walking town. This covers meals at good cafés.',
+          add:[['Sat','9:30 am','French Quarter walk','Self-guided route, about 90 minutes',1],['Sat','6:00 pm','Rock beach promenade','Closed to traffic in the evening'],['Sun','9:00 am','Breakfast at a bakery','Then Serenity beach']]},
+        {name:'Add a scooter and Auroville', detail:'Everything above, plus 2-day scooter hire', price:4200, why:'A scooter turns two beaches into five and gets you to Auroville.',
+          add:[['Sat','1:00 pm','Scooter pickup, ride to Auroville','Helmet included'],['Sat','8:30 pm','Creole dinner','Table held for 8:30 pm']]},
+        {name:'Add a scuba try-dive', detail:'Everything above, plus a shallow dive', price:5800, why:'One of the few places near Bengaluru for a first dive. Sunday morning has one seat left.',
+          add:[['Sun','6:30 am','Scuba try-dive','No experience needed, about 3 hours'],['Sun','2:00 pm','Paradise beach by boat','Back by 5 pm']]}
+      ]
+    }
+  },
+  goa:{
+    name:'Goa', tag:'Most popular', pick:[0,0,0],
+    reason:'It is what most people search for, but it is a long weekend and prices are up sharply.',
+    outFri:['7:00 pm','Overnight from Bengaluru, arrive 7:30 am'],
+    outSat:['5:30 am','Day bus from Bengaluru, arrive 2:30 pm'],
+    back:['6:30 pm','Back in Bengaluru 7:00 am Monday'],
+    cats:{
+      travel:[
+        {name:'AC sleeper bus', detail:'Return, upper berth', price:4600, why:'Surge pricing on this route for the long weekend. This is the lowest fare with seats left.', keep:'Same departure.', cancel:'Non-refundable this weekend'},
+        {name:'Train, 3A', detail:'Return, confirmed berth', price:6200, why:'More comfortable than the bus and confirmed, not waitlisted.', keep:'Confirmed berth.', cancel:'Cancellation fee applies'},
+        {name:'Flight', detail:'Return, cabin bag only', price:9800, why:'Saves 20 hours of travel across the weekend.', keep:'90 minute flight.', cancel:'Non-refundable'}
+      ],
+      stay:[
+        {name:'Driftwood Hostel, Anjuna', detail:'8-bed dorm, 2 nights', price:5800, why:'The cheapest bed with good reviews. Long-weekend rates are roughly double.', keep:'Same area.', cancel:'Free cancellation until Thursday'},
+        {name:'Casa Vagator', detail:'Private room, 2 nights', price:7400, why:'Private room near Vagator.', keep:'Private room.', cancel:'Free cancellation until Thursday'},
+        {name:'Assagao Garden Stay', detail:'Room with pool and breakfast, 2 nights', price:9800, why:'Pool and breakfast in a quiet village.', keep:'Breakfast included.', cancel:'Non-refundable'}
+      ],
+      do:[
+        {name:'Beaches and shacks', detail:'Scooter hire, beach shacks, Chapora fort', price:4800, why:'You need a scooter in Goa, so the base cost is higher than elsewhere.',
+          add:[['Sat','10:00 am','Scooter pickup, Vagator beach','Helmet included',1],['Sat','5:30 pm','Sunset at Chapora fort','Free'],['Sun','9:30 am','Breakfast in Assagao','Then Anjuna beach']]},
+        {name:'Add a kayak trip and dinner', detail:'Everything above, plus backwater kayaking', price:6000, why:'Backwater kayaking is the best-rated calm activity.',
+          add:[['Sat','3:00 pm','Backwater kayaking','2 hours, guide included'],['Sat','8:30 pm','Dinner in Assagao','Table held for 8:30 pm']]},
+        {name:'Add scuba at Grande Island', detail:'Everything above, plus a boat dive', price:7400, why:'The classic Goa splurge.',
+          add:[['Sun','7:00 am','Scuba at Grande Island','Half day, includes lunch']]}
+      ]
+    }
+  }
+};
+
+/* ---------- state ---------- */
+const S = {view:'home', query:'', budget:15000, dest:null, tiers:{travel:0,stay:0,do:0}, extra:{travel:0,stay:0,do:0}, locked:{travel:false,stay:false,do:false}, shrunk:{travel:false,stay:false,do:false}, depart:'fri',
+  narrMore:'', narrFor:'', narrOpen:false, undo:null,
+  sold:null, changeShown:false, narr:'', fresh:'ok', freshTries:0, openWhy:{}, newCat:null, timer:null};
+const $ = (q,el=document)=>el.querySelector(q);
+const app = $('#app'), sheet = $('#sheet');
+const fmt = n => '₹' + (Math.round(n)+0).toLocaleString('en-IN');
+const D = () => DEST[S.dest];
+const priceOf = (c,t,d=S.dest,dep=S.depart) => DEST[d].cats[c][t].price - (c==='travel' && dep==='sat' ? SAT_SAVE : 0);
+const price = c => priceOf(c,S.tiers[c]) + (S.extra[c]||0);
+const XL = {travel:'for cabs and autos there', stay:'for late checkout or a room upgrade', do:'for food and extras'};
+const NM = {travel:'Travel', stay:'Stay', do:'Do'}, NML = {travel:'travel', stay:'your stay', do:'activities'};
+const detailOf = c => D().cats[c][S.tiers[c]].detail;
+const xtraOf = c => S.extra[c] ? `+ ${fmt(S.extra[c])} set aside ${XL[c]}` : '';
+const total = () => CATS.reduce((s,c)=>s+price(c),0);
+const booked = () => CATS.reduce((s,c)=>s+priceOf(c,S.tiers[c]),0);
+const asideSum = () => CATS.reduce((s,c)=>s+(S.extra[c]||0),0);
+const LOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const UNLOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.6-1.8"/></svg>';
+const tier = c => D().cats[c][S.tiers[c]];
+const isSold = (c,t) => S.sold && S.sold.dest===S.dest && S.sold.cat===c && S.sold.tier===t;
+
+function pickFor(d,budget){
+  const sum = p => CATS.reduce((s,c,i)=>s+priceOf(c,p[i],d,'fri'),0);
+  const pref = DEST[d].pick;
+  if(sum(pref)<=budget) return {pick:pref,total:sum(pref)};
+  let best=null;
+  for(let a=0;a<3;a++)for(let b=0;b<3;b++)for(let c=0;c<3;c++){
+    const t=sum([a,b,c]); if(t<=budget && (!best||t>best.total)) best={pick:[a,b,c],total:t};
+  }
+  return best || {pick:[0,0,0],total:sum([0,0,0])};
+}
+function parseBudget(q){
+  const m = q.replace(/,/g,'').match(/(\d+(?:\.\d+)?)\s*(k|thousand)?/i);
+  if(!m) return 15000;
+  let n = parseFloat(m[1]); if(m[2]) n*=1000;
+  if(n<1000) return 15000;
+  return Math.min(60000,Math.max(2000,Math.round(n/100)*100));
+}
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('on'),2400); }
+function go(v){ clearInterval(S.timer); S.view=v; closeSheet(); ({home:viewHome,planning:viewPlanning,options:viewOptions,plan:viewPlan,approve:viewApprove,locked:viewLocked})[v](); app.scrollTop=0; }
+
+/* ---------- 1. home ---------- */
+function viewHome(){
+  const big = [['✈️','Flights'],['🏨','Hotels'],['🏖️','Holiday<br>Packages'],['🚆','Trains/<br>Bus']];
+  const small = [['🚕','Airport Cabs<br>&amp; Rentals'],['🏡','Villas &amp;<br>Homestays'],['🚙','Outstation<br>Cabs'],['💱','Forex Card<br>&amp; Currency'],
+                 ['🎈','Tours &amp;<br>Attractions',1],['🛏️','Hourly Stays'],['🛂','Visa'],['🛡️','Travel<br>Insurance']];
+  const asks = ['Best I can do for ₹15K this weekend','Somewhere quiet for ₹8K, leaving Friday night','Anything for ₹5K this weekend?'];
+  app.innerHTML = `<div class="view home">
+    <div class="hero">
+      <div class="herobar"><span class="burger"><i></i><i></i><i></i></span><span style="flex:1"></span><span class="mycash"><i>my</i>Cash</span><span class="mybiz"><i>my</i>Biz</span></div>
+      <div class="banner"><small>✦ LIVE NOW ✦</small><b>Weekend Agent</b><span>Tell me your budget. I'll plan the whole weekend.</span></div>
+    </div>
+    <div class="aiwrap"><div class="aibox">
+      <textarea id="q" rows="2" placeholder="I have ₹15K for this weekend…" aria-label="Describe your trip"></textarea>
+      <button class="orb" id="goBtn" aria-label="Plan my weekend">✦</button>
+    </div></div>
+    <div class="shead"><b>Try asking</b><span>Weekend Agent <em class="newtag">new</em></span></div>
+    <div class="starters">${asks.map(a=>`<button class="starter" data-q="${a}"><span class="spk">✦</span>${a}</button>`).join('')}</div>
+    <div class="btiles">${big.map(([i,l])=>`<div class="btile"><i>${i}</i><b>${l}</b></div>`).join('')}</div>
+    <div class="sgrid">${small.map(([i,l,n])=>`<div class="stile">${n?'<em>new</em>':''}<i>${i}</i><span>${l}</span></div>`).join('')}</div>
+    <p class="tiny muted center" style="padding:0 16px 18px">You approve everything before anything is booked.</p>
+    <div class="nav">
+      <div class="on"><i>🏠</i>Home</div><div><i>🧳</i>My Trips</div>
+      <div><button class="orb" id="navOrb" aria-label="Open Weekend Agent">✦</button></div>
+      <div><i>🤍</i>Wishlists</div><div><i>💳</i>Credit Card</div>
+    </div>
+  </div>`;
+  const start = q => { S.query = q.trim() || asks[0]; S.budget = parseBudget(S.query); S.depart='fri'; S.sold=null; S.changeShown=false; go('planning'); };
+  app.querySelectorAll('.starter').forEach(b=>b.onclick=()=>start(b.dataset.q));
+  $('#goBtn').onclick = ()=>start($('#q').value);
+  $('#navOrb').onclick = ()=>{ app.scrollTop=0; $('#q').focus(); };
+  $('#q').onkeydown = e=>{ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();start(e.target.value);} };
+}
+
+/* ---------- 2. planning (transparent loading) ---------- */
+function viewPlanning(){
+  const steps = [
+    ['done',`Read your ask`,`${fmt(S.budget)} all-in · this weekend · 1 person. I'm assuming you leave from Bengaluru on Friday night.`],
+    ['done','Checked buses, trains and flights','14 routes that get you there and back by Monday morning.'],
+    ['done','Priced stays for 2 nights','41 places with ratings above 4.0.'],
+    ['drop','Dropped Varkala','The only return gets in at 2 am Monday.'],
+    ['drop','Dropped Hampi','No beach. I guessed you want one, and you can change that.'],
+    ['done','Built complete plans','Each one totalled with taxes and fees included.']
+  ];
+  app.innerHTML = `<div class="view pad"><div style="padding-top:26px">
+    <p class="tiny muted">"${escapeHtml(S.query)}"</p>
+    <h1 style="margin-top:8px">Working out what ${fmt(S.budget)} can buy</h1>
+    <div class="steps" id="steps"></div></div></div>`;
+  const box = $('#steps'); let i=0;
+  const next = ()=>{
+    if(S.view!=='planning') return;
+    if(i>=steps.length){ setTimeout(()=>S.view==='planning'&&go('options'),500); return; }
+    const [kind,t,sub]=steps[i++];
+    const el=document.createElement('div'); el.className='step run';
+    el.innerHTML=`<div class="dot"></div><div><p>${t}…</p></div>`; box.appendChild(el);
+    setTimeout(()=>{ el.className='step '+kind; el.innerHTML=`<div class="dot">${kind==='drop'?'–':'✓'}</div><div><p>${t}</p><small>${sub}</small></div>`; next(); }, 620);
+  };
+  next();
+}
+function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* ---------- 3. options ---------- */
+function viewOptions(){
+  const rows = Object.keys(DEST).map(k=>({k,...pickFor(k,S.budget)})).sort((a,b)=>(a.total>S.budget)-(b.total>S.budget));
+  const fits = rows.filter(r=>r.total<=S.budget);
+  const card = r => {
+    const d=DEST[r.k], over=r.total-S.budget, scale=Math.max(S.budget,r.total);
+    const segs = CATS.map((c,i)=>`<span style="width:${priceOf(c,r.pick[i],r.k,'fri')/scale*100}%;background:${COLOR[c]}"></span>`).join('');
+    const perks = CATS.map((c,i)=>`<div class="perk">✓ ${d.cats[c][r.pick[i]].name}</div>`).join('');
+    return `<button class="opt lcard" data-k="${r.k}">
+      <div class="photo ph-${r.k}"><span class="ptag">${d.tag}</span><span class="pfit ${over>0?'bad':''}">${over>0?fmt(over)+' over':fmt(-over)+' left'}</span><span class="pdots"><i></i><i></i><i></i><i></i><i></i></span></div>
+      <div class="lbody">
+        <div class="lrow"><div><b class="lname">${d.name}</b><span class="lloc">2 nights | travel, stay and activities</span>${perks}</div>
+          <div class="lprice"><b>${fmt(r.total).replace('₹','₹ ')}</b><span>all-in, taxes included</span><span>Per person</span></div></div>
+        <div class="mini">${segs}</div>
+        <div class="insight"><span class="spk">✦</span><span>${d.reason}</span></div>
+      </div></button>`;
+  };
+  let head, body;
+  if(fits.length){
+    head = `<div class="lh">Showing ${fits.length} weekend${fits.length>1?'s':''} within ${fmt(S.budget)}</div><p class="muted small" style="margin-top:6px">Each price is the full trip: travel, stay, food and activities.</p>`;
+    body = rows.map(card).join('');
+  } else {
+    const c = rows.slice().sort((a,b)=>a.total-b.total)[0];
+    head = `<div class="lh">Nothing fits ${fmt(S.budget)} this weekend</div><p class="muted small" style="margin-top:6px">I'd rather say so than show you a plan with hidden costs. The cheapest complete weekend is ${DEST[c.k].name} at ${fmt(c.total)}, which is ${fmt(c.total-S.budget)} more.</p>`;
+    body = `<div class="fix" style="margin:0 0 6px"><b>Three ways forward</b><div class="list">
+        <button class="fixbtn" id="stretch"><div>Stretch to ${fmt(c.total)}<span>Bare-bones ${DEST[c.k].name}: seater bus, dorm bed, free activities</span></div><span class="pill ok">Fits</span></button>
+        <button class="fixbtn" id="rebudget"><div>Change my budget<span>Go back and tell me a new number</span></div>›</button>
+        <button class="fixbtn" id="later"><div>Try the weekend after<span>Prices are usually 20 to 30 percent lower</span></div>›</button>
+      </div></div><h2>For reference</h2>${rows.map(card).join('')}`;
+  }
+  app.innerHTML = `<div class="view">
+    <div class="lhead"><div class="lbox"><button class="back" aria-label="Back">←</button><div class="lt"><b>Weekends from Bengaluru</b><span>This weekend, 1 traveller, ${fmt(S.budget)}</span></div><button class="pen" aria-label="Edit search">✎</button></div></div>
+    <div class="fchips"><span>Sort ⇅</span><span class="on">Within ${fmt(S.budget)}</span><span>Beach</span><span>Price ⌄</span></div>
+    <div class="pad">${head}<div style="margin-top:14px">${body}</div></div></div>`;
+  $('.back').onclick=()=>go('home'); $('.pen').onclick=()=>go('home');
+  const open = (k,pick)=>{ S.dest=k; S.extra={travel:0,stay:0,do:0}; S.locked={travel:false,stay:false,do:false}; S.shrunk={travel:false,stay:false,do:false}; S.undo=null; CATS.forEach((c,i)=>S.tiers[c]=pick[i]); S.openWhy={}; S.newCat=null;
+    const o=total()-S.budget, sp=o<0?fillSpare():0;
+    S.narr = o>0 ? `This is the cheapest ${D().name} I can build and it is still ${fmt(o)} over. I've listed ways to close the gap below.`
+                 : `Here's ${D().name} using your full ${fmt(S.budget)}. I spent more on ${S.tiers.do===2?'doing things':'the stay'} because that's where the weekend is${sp?`, and set aside ${fmt(sp)} for food and extras`:''}. Drag the handles to move money around.`;
+    go('plan'); };
+  app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>open(b.dataset.k, rows.find(r=>r.k===b.dataset.k).pick));
+  if(!fits.length){
+    const c = rows.slice().sort((a,b)=>a.total-b.total)[0];
+    $('#stretch').onclick=()=>{ S.budget=c.total; open(c.k,c.pick); S.narr=`Budget stretched to ${fmt(S.budget)}. This is the leanest version of ${D().name}; everything is still refundable.`; updatePlan(); };
+    $('#rebudget').onclick=()=>go('home');
+    $('#later').onclick=()=>toast('Other dates are outside this prototype.');
+  }
+}
+
+/* ---------- 4. plan: the budget bar ---------- */
+function viewPlan(){
+  app.innerHTML = `<div class="view">
+    <div class="topbar"><button class="back" aria-label="Back to options">←</button><div><b>${D().name}</b><span>Sat–Sun · 2 nights away</span></div></div>
+    <div class="chips" id="chips"></div>
+    <div class="card budget" id="budget">
+      <div class="head"><div class="amt" id="amt"></div><span class="pill" id="pill"></span></div>
+      <div class="bar" id="bar">
+        <div class="track"><div class="seg travel"><span class="sl"><em>Travel</em><b></b></span></div><div class="seg stay"><span class="sl"><em>Stay</em><b></b></span></div><div class="seg do"><span class="sl"><em>Do</em><b></b></span></div><div class="leftlab" id="leftlab"></div><div class="seg over"></div></div>
+        <div class="ticks" id="ticks"></div><div class="tip" id="tip"></div>
+        <div class="mark" id="mark"></div>
+        <button class="handle" data-i="0" role="slider" aria-label="Spend more or less on getting there"></button>
+        <button class="handle" data-i="1" role="slider" aria-label="Spend more or less on staying"></button>
+        <button class="handle" data-i="2" role="slider" aria-label="Spend more or less on doing"></button>
+      </div>
+      <p class="hint" id="hint"></p>
+      <div class="legend" id="legend"></div>
+      <div class="fresh" id="fresh"></div>
+    </div>
+    <div class="narr" id="narr"><div class="spark">✦</div><div class="nb"><p></p><div class="more" id="more"></div></div></div>
+    <div id="fix"></div>
+    <div id="days"></div>
+    <div class="foot"><div id="snackbox"></div><button class="btn" id="review"></button></div>
+  </div>`;
+  $('.back').onclick=()=>go('options');
+  $('#review').onclick=()=>go('approve');
+  app.querySelectorAll('.handle').forEach(h=>{
+    h.onpointerdown=e=>{ if(S.locked[CATS[+h.dataset.i]]) return lockedNudge(CATS[+h.dataset.i]); startDrag(e,h); };
+    h.onkeydown=e=>{ if(e.key!=='ArrowLeft'&&e.key!=='ArrowRight')return; e.preventDefault();
+      const A=CATS[+h.dataset.i]; if(S.locked[A]) return lockedNudge(A);
+      const b=snap(), prev=undoSnap(), up=e.key==='ArrowRight'; let a=S.tiers[A], xa=S.extra[A];
+      if(up){ if(a<topTier(A)){ a++; xa=0; } else xa=Math.min(capFor(A),xa+500); } else { if(xa>0) xa=Math.max(0,xa-500); else a--; }
+      if(a<0||isSold(A,a)) return; S.clamped=false; setPart(A,a,xa,b);
+      if(CATS.every(c=>b.t[c]===S.tiers[c]&&b.x[c]===S.extra[c])){ if(S.clamped) lockedNudge(); return; }
+      S.shrunk[A]=!up; narrate(b.t,b.x,A); offerUndo(prev); updatePlan(); };
+  });
+  S.shown=null; S.drag=null; S.wasOver=total()>S.budget;
+  if(!S.taught){ $('#bar').classList.add('teach'); S.taught=true; }
+  updatePlan();
+}
+
+function tweenAmt(to){
+  const el=$('#amt'), from=S.shown??to, t0=performance.now(); S.shown=to; cancelAnimationFrame(S.raf);
+  const step=n=>{ if(!el.isConnected) return; const k=Math.min(1,(n-t0)/300), v=from+(to-from)*(1-Math.pow(1-k,3));
+    el.innerHTML=`${fmt(v)} <small>of ${fmt(S.budget)}</small>`; if(k<1) S.raf=requestAnimationFrame(step); };
+  step(t0);
+}
+
+function updatePlan(flash=true){
+  if(S.view!=='plan') return;
+  const t=total(), over=t-S.budget, scale=Math.max(S.budget,t);
+  // chips
+  $('#chips').innerHTML = [
+    ['depart', S.depart==='fri'?'Leaving Fri night':'Leaving Sat 6 am'],
+    ['from','From Bengaluru'],['who','1 person'],['dest',`${D().name}`]
+  ].map(([k,l])=>`<button class="chip" data-k="${k}">${l}<u>✎</u></button>`).join('');
+  $('#chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>chip(b.dataset.k));
+  // header
+  tweenAmt(t);
+  const pill=$('#pill'); pill.className='pill '+(over>0?'bad':'ok'); pill.textContent = over>0?`${fmt(over)} over`:`${fmt(-over)} left`;
+  // bar
+  let x=0; const pos=[];
+  const barEl=$('#bar'), barW=barEl.clientWidth;
+  CATS.forEach(c=>{ const w=price(c)/scale*100; const el=$('.seg.'+c); el.style.left=x+'%'; el.style.width=w+'%'; { const px=w/100*barW - (c==='do' && x+w>95 ? 22 : 0), tight=px<88; el.classList.toggle('compact',tight); el.classList.toggle('narrow',px<62); $('b',el).textContent = tight ? '₹'+(price(c)/1000).toFixed(1).replace('.0','')+'K' : fmt(price(c)); } x+=w; pos.push(x); });
+  { const ll=$('#leftlab'), gap=Math.max(0,S.budget/scale*100-x); ll.style.left=x+'%'; ll.style.width=gap+'%'; ll.textContent = gap/100*barW>70 ? fmt(S.budget-t)+' left' : ''; }
+  if(over>0 && !S.wasOver){ barEl.classList.remove('shake'); void barEl.offsetWidth; barEl.classList.add('shake'); }
+  S.wasOver = over>0;
+  { const h=$('#hint'); h.className='hint'+(over>0?' bad':''); const nl=CATS.filter(c=>S.locked[c]).length;
+    h.textContent = over>0 ? '⚠ '+fmt(over)+' over '+fmt(S.budget)+'. Drag a handle left to fit'
+      : nl ? `Drag right to spend more. Locked parts won't change`
+      : over<0 ? `${fmt(-over)} unspent. Drag any part right to use it`
+      : 'Drag a handle. Only the part next to it makes room, so the bar stays full';
+    barEl.classList.toggle('isover',over>0); }
+  CATS.forEach((c,i)=>{ $('.seg.'+c).classList.toggle('locked',!!S.locked[c]); app.querySelectorAll('.handle')[i].classList.toggle('locked',!!S.locked[c]); });
+  if(S.drag!=null){ const A=CATS[S.drag], off=CATS.slice(0,S.drag).reduce((a,c)=>a+price(c),0);
+    $('#ticks').innerHTML=[0,1,2].filter(n=>!isSold(A,n)).map(n=>`<i class="${n===S.tiers[A]&&!S.extra[A]?'on':''}" style="left:${(off+priceOf(A,n))/scale*100}%"></i>`).join('');
+    const tip=$('#tip'); tip.style.left=Math.min(78,Math.max(22,pos[S.drag]))+'%';
+    tip.textContent = S.clamped ? `${NM[A]} ${fmt(price(A))}  ·  locked parts stay put` : `${NM[A]} ${fmt(price(A))}  ·  ${over>0?fmt(over)+' over':fmt(-over)+' left'}`;
+  } else $('#ticks').innerHTML='';
+  const m=S.budget/scale*100; const ov=$('.seg.over'); ov.style.left=m+'%'; ov.style.width=Math.max(0,x-m)+'%';
+  const mark=$('#mark'); mark.style.left=`calc(${m}% - ${m>=99.9?2:1}px)`; mark.dataset.l=over>0?fmt(S.budget):'';
+  mark.style.opacity = over>0?1:0;
+  app.querySelectorAll('.handle').forEach((h,i)=>{ h.style.left=Math.min(pos[i],97)+'%'; h.setAttribute('aria-valuetext',`${LABEL[CATS[i]]} ${fmt(price(CATS[i]))}`+(CATS[i+1]?`, ${LABEL[CATS[i+1]]} ${fmt(price(CATS[i+1]))}`:'')); });
+  // legend
+  $('#legend').innerHTML = CATS.map(c=>`<div class="leg ${S.newCat===c?'new':''}"><button class="lgo" data-c="${c}"><span class="sw" style="background:${COLOR[c]}"></span>
+    <span class="t"><b>${LABEL[c]}</b><span>${tier(c).name} · ${detailOf(c)}</span>${S.extra[c]?`<span class="xt">${xtraOf(c)}</span>`:''}</span><span class="p">${fmt(price(c))}</span><span class="c">›</span></button>
+    <button class="lk ${S.locked[c]?'on':''}" data-lock="${c}" aria-pressed="${!!S.locked[c]}" aria-label="${S.locked[c]?'Unlock':'Lock'} ${LABEL[c].toLowerCase()}">${S.locked[c]?LOCK_SVG:UNLOCK_SVG}</button></div>`).join('');
+  $('#legend').querySelectorAll('.lgo').forEach(b=>b.onclick=()=>openTiers(b.dataset.c));
+  $('#legend').querySelectorAll('[data-lock]').forEach(b=>b.onclick=()=>toggleLock(b.dataset.lock));
+  renderFresh();
+  // narration
+  const n=$('#narr'); $('p',n).textContent=S.narr;
+  { const m=$('#more'), has=S.narrMore && S.narrFor===S.narr;
+    m.innerHTML = has ? `<button id="moreb">${S.narrOpen?'Hide changes':'See all changes'}</button>${S.narrOpen?`<p>${S.narrMore}</p>`:''}` : '';
+    if(has) $('#moreb').onclick=()=>{ S.narrOpen=!S.narrOpen; updatePlan(false); }; }
+  if(flash){ n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); }
+  // fixes
+  $('#fix').innerHTML = over>0 ? fixHtml(over) : '';
+  bindFixes($('#fix'));
+  // itinerary
+  $('#days').innerHTML = itineraryHtml();
+  $('#days').querySelectorAll('[data-swap]').forEach(b=>b.onclick=()=>openTiers(b.dataset.swap));
+  $('#days').querySelectorAll('[data-why]').forEach(b=>b.onclick=()=>{ S.openWhy[b.dataset.why]=!S.openWhy[b.dataset.why]; updatePlan(false); });
+  // footer
+  const r=$('#review'); r.disabled=over>0; r.textContent = over>0?`${fmt(over)} over budget · pick a fix above`:(asideSum()?`Review and book · ${fmt(booked())} now`:`Review and book · ${fmt(t)}`);
+  renderSnack();
+  S.newCat=null;
+}
+
+/* lock a part so stretching the others never touches it */
+function toggleLock(c){
+  S.locked[c]=!S.locked[c];
+  S.narr = S.locked[c] ? `Locked ${NML[c]} at ${fmt(price(c))}. Dragging the other parts won't touch it.` : `Unlocked ${NML[c]}. It can give way again when you stretch something else.`;
+  S.newCat=c; updatePlan();
+}
+function lockedNudge(c){
+  const bar=$('#bar'); if(bar){ bar.classList.remove('shake'); void bar.offsetWidth; bar.classList.add('shake'); }
+  toast(c ? `${NM[c]} is locked. Tap its lock below to change it.` : `No more room: the locked parts can't give way.`);
+}
+
+/* undo: a snackbar for 5 seconds after any change that moved more than one thing */
+const undoSnap = () => ({t:{...S.tiers}, x:{...S.extra}, sh:{...S.shrunk}, narr:S.narr, depart:S.depart, budget:S.budget});
+function offerUndo(prev, label){
+  clearTimeout(S.undoT); S.undo={...prev, label:label||S.narr.split('. ')[0].replace(/\.$/,''), at:Date.now()};
+  S.undoT=setTimeout(()=>{ S.undo=null; renderSnack(); },5000);
+}
+function renderSnack(){
+  const box=$('#snackbox'); if(!box) return;
+  if(!S.undo){ box.innerHTML=''; return; }
+  if(!$('.snack',box) || box.dataset.at!=S.undo.at){ box.dataset.at=S.undo.at;
+    box.innerHTML=`<div class="snack" role="status"><i></i><span></span><button id="undob">Undo</button></div>`;
+    $('#undob').onclick=()=>{ const u=S.undo; if(!u) return; S.tiers=u.t; S.extra=u.x; S.shrunk=u.sh; S.depart=u.depart; S.budget=u.budget; S.narr=u.narr; S.undo=null; clearTimeout(S.undoT); updatePlan(); toast('Undone. Back to how it was.'); };
+    const ring=$('i',box), t0=S.undo.at; (function tick(){ if(!ring.isConnected) return; const p=Math.max(0,1-(Date.now()-t0)/5000); ring.style.setProperty('--p',p*100+'%'); if(p>0) requestAnimationFrame(tick); })(); }
+  $('span',box).textContent=S.undo.label;
+}
+
+function renderFresh(){
+  const f=$('#fresh'); if(!f) return;
+  if(S.fresh==='err'){ f.className='fresh err'; f.innerHTML=`<span>Couldn't reach live prices. Showing prices from 4 min ago.</span><button id="rf">Retry</button>`; }
+  else if(S.fresh==='load'){ f.className='fresh'; f.innerHTML=`<span>Re-checking all three prices…</span><span></span>`; }
+  else { f.className='fresh'; f.innerHTML=`<span>● Live prices · checked ${S.fresh==='now'?'just now':'2 min ago'}</span><button id="rf">Refresh</button>`; }
+  const b=$('#rf'); if(b) b.onclick=()=>{
+    S.fresh='load'; $('#budget').classList.add('shimmer'); renderFresh();
+    setTimeout(()=>{ S.freshTries++; S.fresh = S.freshTries===1?'err':'now'; const bd=$('#budget'); if(bd) bd.classList.remove('shimmer'); renderFresh(); if(S.fresh==='now') toast('No price changes. Everything still available.'); },1100);
+  };
+}
+
+function itineraryHtml(){
+  const d=D(), items=[];
+  const tv=tier('travel'), st=tier('stay');
+  const out = S.depart==='fri'?d.outFri:d.outSat;
+  items.push({day:S.depart==='fri'?'Fri':'Sat',ord:S.depart==='fri'?2130:600,time:out[0],title:tv.name,sub:out[1],cat:'travel',key:'out'});
+  items.push({day:'Sat',ord:S.depart==='fri'?800:1500,time:S.depart==='fri'?'8:00 am':'3:00 pm',title:'Check in: '+st.name,sub:st.detail+(S.depart==='fri'?' · early check-in arranged':''),cat:'stay',key:'stay'});
+  for(let i=0;i<=S.tiers.do;i++) d.cats.do[i].add.forEach((a,j)=>{
+    if(S.depart==='sat' && a[0]==='Sat' && a[4]) return;
+    items.push({day:a[0],ord:toOrd(a[1]),time:a[1],title:a[2],sub:a[3],cat:'do',key:'do'+i+j,first:i===S.tiers.do&&j===0});
+  });
+  items.push({day:'Sun',ord:1100,time:'11:00 am',title:'Check out',sub:'Bags can stay at reception',cat:'stay',key:'out2',plain:true});
+  items.push({day:'Sun',ord:toOrd(d.back[0]),time:d.back[0],title:tv.name+' home',sub:d.back[1],cat:'travel',key:'back',plain:true});
+  const names={Fri:'Friday',Sat:'Saturday',Sun:'Sunday'};
+  return ['Fri','Sat','Sun'].map(day=>{
+    const list=items.filter(i=>i.day===day).sort((a,b)=>a.ord-b.ord); if(!list.length) return '';
+    return `<div class="day"><h2>${names[day]}</h2><div class="card" style="padding:2px 14px">${list.map(it=>{
+      const showActs = !it.plain && (it.cat!=='do' || it.first);
+      return `<div class="item ${S.newCat===it.cat?'new':''}"><div class="bar3" style="background:${COLOR[it.cat]}"></div><div class="time">${it.time}</div><div class="body">
+        <b>${it.title}</b><span>${it.sub}</span>
+        ${showActs?`<div class="acts"><button data-why="${it.key}">${S.openWhy[it.key]?'Hide reason':'Why this?'}</button><button data-swap="${it.cat}">Swap</button></div>`:''}
+        ${S.openWhy[it.key]?`<div class="why">${tier(it.cat).why}</div>`:''}
+      </div></div>`;}).join('')}</div></div>`;
+  }).join('') + (S.depart==='sat'?`<p class="tiny muted" style="margin:10px 16px">Leaving Saturday morning removes Saturday's morning activity.</p>`:'') + '<div style="height:8px"></div>';
+}
+function toOrd(t){ const m=t.match(/(\d+):(\d+)\s*(am|pm)/); let h=+m[1]%12; if(m[3]==='pm')h+=12; return h*100+ +m[2]; }
+
+/* drag: each handle owns one part. Stretching it uses unspent money first, then the other parts give way.
+   Past its best option a part keeps growing as extra money, up to the budget limit.
+   Shrinking it only shrinks that part, so the total falls. Everything is computed from the state at drag start. */
+const snap = () => ({t:{...S.tiers}, x:{...S.extra}});
+const topTier = c => { for(let n=2;n>=0;n--) if(!isSold(c,n)) return n; return 0; };
+const lowTier = c => { for(let n=0;n<3;n++) if(!isSold(c,n)) return n; return 0; };
+/* who takes money another part gives up: Do first (spending money), then Stay, then Travel,
+   skipping locked parts and parts you shrank yourself. If none qualify, it shows as money left. */
+const receiver = A => ['do','stay','travel'].find(c=>c!==A && !S.locked[c] && !S.shrunk[c]);
+function fillSpare(){ const left=S.budget-total(); const r=['do','stay','travel'].find(c=>!S.locked[c]); if(left>0&&r) S.extra[r]+=left; return left>0?left:0; }
+/* a handle sits on the boundary between its part and the next one, so it only trades money with that neighbour.
+   Travel's handle trades with Stay, Stay's with Do, and Do's (the bar's end) with unspent money. Other parts never move. */
+const nbOf = A => CATS[CATS.indexOf(A)+1] || null;
+const capFor = A => { const N=nbOf(A), canN=N&&!S.locked[N];
+  const rest=CATS.filter(c=>c!==A&&c!==N).reduce((s,c)=>s+price(c),0) + (N ? (canN?priceOf(N,lowTier(N)):price(N)) : 0);
+  return Math.max(0, S.budget - rest - priceOf(A,topTier(A))); };
+function setPart(A,a,xa,base){
+  const N=nbOf(A), canN=N&&!S.locked[N];
+  S.tiers={...base.t}; S.extra={...base.x}; S.tiers[A]=a; S.extra[A]=xa;
+  const grew=price(A)-(priceOf(A,base.t[A])+base.x[A]);
+  if(grew<=0){ if(canN) S.extra[N]-=grew; return; }   // shrinking: the neighbour takes the money (at the bar's end it becomes money left)
+  if(total()<=S.budget) return;                         // growing: unspent money goes first
+  if(canN){                                             // then the neighbour shrinks: its extra first, then a cheaper option
+    const room=S.budget-CATS.filter(c=>c!==N).reduce((s,c)=>s+price(c),0);
+    S.extra[N]=0;
+    let n=base.t[N]; while(n>0 && (isSold(N,n)||priceOf(N,n)>room)) n--;
+    S.tiers[N]=n; if(priceOf(N,n)<=room) S.extra[N]=room-priceOf(N,n);   // keep the bar exactly full
+  }
+  if(total()>S.budget){                                 // the neighbour can't give more: stop at the most that fits
+    S.clamped=true; const ov=total()-S.budget;
+    if(xa>0) return setPart(A,a,Math.max(0,xa-ov),base);
+    for(let n=a-1;n>=base.t[A];n--) if(!isSold(A,n)) return setPart(A,n,0,base);
+  }
+}
+function startDrag(e,h){
+  e.preventDefault();
+  const i=+h.dataset.i, A=CATS[i];
+  const bar=$('#bar'), w=bar.getBoundingClientRect().width, scale=Math.max(S.budget,total());
+  const sA=price(A), x0=e.clientX, before=snap(), narr0=S.narr, prev=undoSnap(); S.clamped=false;
+  const top=topTier(A), topP=priceOf(A,top), cap=capFor(A);
+  const same=()=>CATS.every(c=>before.t[c]===S.tiers[c]&&before.x[c]===S.extra[c]);
+  h.setPointerCapture(e.pointerId); h.classList.add('drag'); bar.classList.add('dragging'); bar.classList.remove('teach'); S.drag=i; updatePlan(false);
+  h.onpointermove = ev=>{
+    const tA=sA+(ev.clientX-x0)/w*scale; let a=before.t[A], xa=0;
+    if(cap>0 && tA>topP+250){ a=top; xa = tA>=topP+cap-250 ? cap : Math.min(cap,Math.round((tA-topP)/500)*500); }
+    else { let bd=Infinity; for(let n=0;n<3;n++){ if(isSold(A,n)) continue; const d=Math.abs(priceOf(A,n)-tA); if(d<bd){bd=d;a=n;} } }
+    const last=snap(), wasC=S.clamped; S.clamped=false; setPart(A,a,xa,before);
+    if(S.clamped!==wasC || CATS.some(c=>last.t[c]!==S.tiers[c]||last.x[c]!==S.extra[c])){ narrate(before.t,before.x,A); updatePlan(false); }
+  };
+  h.onpointerup = h.onpointercancel = ()=>{ h.onpointermove=h.onpointerup=h.onpointercancel=null; h.classList.remove('drag'); bar.classList.remove('dragging'); S.drag=null; const cl=S.clamped; S.clamped=false;
+    if(same()){ S.narr=narr0; if(cl) lockedNudge(); } else { if(price(A)!==sA) S.shrunk[A]=price(A)<sA; narrate(before.t,before.x,A); offerUndo(prev); } updatePlan(); };
+}
+
+/* the note says what changed. With a dragged part (primary) and several knock-on changes,
+   it leads with one line and tucks the details behind "See all changes". */
+function narrate(before,bx,primary){
+  const ch=[]; let keep='';
+  CATS.forEach(c=>{
+    if(before[c]===S.tiers[c]) return;
+    const d=priceOf(c,S.tiers[c])-priceOf(c,before[c]), t=tier(c);
+    S.newCat=c;
+    if(d<0){ ch.push({c,txt: c==='do' ? `Cut activities back to ${lower(t.name).replace(/^add /,'')}, freeing ${fmt(-d)}.` : `Moved ${c==='travel'?'your travel':'your stay'} to ${lower(t.name)}, freeing ${fmt(-d)}.`, down:true}); if(c!==primary) keep=t.keep; }
+    else ch.push({c,txt:`${c==='do'?'Added':'Upgraded to'} ${lower(t.name).replace(/^add /,'')} for ${fmt(d)} more.`});
+  });
+  if(bx) CATS.forEach(c=>{ const dx=S.extra[c]-bx[c];
+    if(dx>0){ ch.push({c,txt:`Set aside ${fmt(dx)} more ${XL[c]}.`}); S.newCat=c; }
+    else if(dx<0){ ch.push({c,txt:`Took back ${fmt(-dx)} set aside ${XL[c]}.`, down:true}); S.newCat=c; } });
+  if(!ch.length) return;
+  const o=total()-S.budget, tail = o>0?` That puts you ${fmt(o)} over.`:(o<0?` ${fmt(-o)} left.`:' Budget fully used.');
+  const mine=ch.filter(x=>x.c===primary), rest=ch.filter(x=>x.c!==primary);
+  if(primary && (ch.length>2 || mine.length>1) && mine.length){
+    const grew=price(primary)>priceOf(primary,before[primary])+(bx?bx[primary]:0);
+    const head=`${NM[primary]} ${grew?'up':'down'} to ${fmt(price(primary))}: ${lower(tier(primary).name)}${S.extra[primary]?' + '+fmt(S.extra[primary])+' set aside':''}.`;
+    const from=[...new Set(rest.map(x=>NML[x.c]))];
+    S.narr = head + (from.length?(grew?` Paid for from ${from.join(' and ')}.`:` Moved the money to ${from.join(' and ')}.`):'') + tail;
+    S.narrMore = ch.map(x=>x.txt).join(' ') + (keep?' '+keep:''); S.narrFor=S.narr; S.narrOpen=false;
+  } else {
+    S.narr = ch.map(x=>x.txt).join(' ') + (keep?' '+keep:'') + tail; S.narrMore='';
+  }
+}
+const lower = s => /^[A-Z][a-z]+ [A-Z]/.test(s)||/Hostel|Cottages|Resort|Villa|House|Casa|Stay|Volvo|^AC |^Non-AC/.test(s) ? s : s.charAt(0).toLowerCase()+s.slice(1);
+
+/* over-budget fixes: always concrete trade-offs, never a dead end */
+function fixList(){
+  const out=[], t=total();
+  CATS.forEach(c=>{
+    for(let n=S.tiers[c]-1;n>=0;n--){ if(isSold(c,n)) continue;
+      const save=price(c)-priceOf(c,n); out.push({id:'t-'+c+'-'+n, label:`${LABEL[c]}: ${D().cats[c][n].name}`, sub:D().cats[c][n].keep, save}); break; }
+  });
+  CATS.forEach(c=>{ if(S.extra[c]) out.push({id:'x-'+c, label:`Don't set aside ${fmt(S.extra[c])} ${XL[c]}`, sub:'Keeps '+D().cats[c][S.tiers[c]].name, save:S.extra[c]}); });
+  if(S.depart==='fri') out.push({id:'sat', label:'Leave Saturday 6 am instead', sub:'Cheaper day bus. You lose Saturday morning.', save:SAT_SAVE});
+  out.sort((a,b)=>((t-a.save>S.budget)-(t-b.save>S.budget)) || a.save-b.save);
+  const alt = Object.keys(DEST).filter(k=>k!==S.dest).map(k=>({k,...pickFor(k,S.budget)})).filter(r=>r.total<=S.budget)[0];
+  if(alt) out.push({id:'d-'+alt.k, label:`Switch to ${DEST[alt.k].name}`, sub:`A complete plan for ${fmt(alt.total)}`, fits:true});
+  out.push({id:'stretch', label:`Stretch budget to ${fmt(t)}`, sub:'Keep this plan exactly as it is', fits:true});
+  return out;
+}
+function fixHtml(over){
+  const t=total();
+  return `<div class="fix"><b>${fmt(over)} over your ${fmt(S.budget)}</b><p class="small" style="margin-top:4px">Pick one and I'll keep everything else as it is.</p><div class="list">`+
+    fixList().map(f=>{ const still=f.fits?0:(t-f.save-S.budget);
+      return `<button class="fixbtn" data-fix="${f.id}"><div>${f.label}<span>${f.sub}</span></div>
+        <span class="pill ${still>0?'bad':'ok'}">${f.fits?'Fits':(still>0?`−${fmt(f.save)} · ${fmt(still)} over`:`−${fmt(f.save)} · fits`)}</span></button>`; }).join('')+`</div></div>`;
+}
+function bindFixes(root){
+  root.querySelectorAll('[data-fix]').forEach(b=>b.onclick=()=>{
+    const id=b.dataset.fix, before={...S.tiers}, prev=undoSnap();
+    if(S.view==='plan' && !id.startsWith('d-')) setTimeout(()=>{ offerUndo(prev); renderSnack(); });
+    if(id==='sat'){ S.depart='sat'; const o=total()-S.budget; S.narr=`Switched to the Saturday 6 am bus, saving ${fmt(SAT_SAVE)}. You arrive mid-afternoon.`+(o>0?` Still ${fmt(o)} over.`:` ${fmt(-o)} left.`); S.newCat='travel'; }
+    else if(id==='stretch'){ S.budget=total(); S.narr=`Budget set to ${fmt(S.budget)}. Nothing else changed.`; }
+    else if(id.startsWith('d-')){ const k=id.slice(2), p=pickFor(k,S.budget); S.dest=k; S.depart='fri'; S.extra={travel:0,stay:0,do:0}; S.locked={travel:false,stay:false,do:false}; S.shrunk={travel:false,stay:false,do:false}; S.undo=null; CATS.forEach((c,i)=>S.tiers[c]=p.pick[i]); { const bt=total(), sp=fillSpare(); S.narr=`Switched to ${D().name}: a complete weekend for ${fmt(bt)}`+(sp?`, with ${fmt(sp)} set aside for food and extras.`:'.'); } if(S.view!=='plan'){go('plan');return;} viewPlan(); return; }
+    else if(id.startsWith('x-')){ const c=id.slice(2), bx={...S.extra}; S.extra[c]=0; narrate(before,bx); }
+    else { const [,c,n]=id.split('-'); S.tiers[c]=+n; S.extra[c]=0; narrate(before); }
+    if(S.view==='approve') viewApprove(); else updatePlan();
+  });
+}
+
+/* sheets */
+function openSheet(html){ sheet.innerHTML=`<div class="scrim"></div><div class="panel" role="dialog" aria-modal="true"><div class="grab"></div>${html}</div>`; sheet.classList.add('open'); $('.scrim',sheet).onclick=closeSheet; }
+function closeSheet(){ sheet.classList.remove('open'); sheet.innerHTML=''; }
+function openTiers(c, onPick){
+  const cur=price(c), t=total();
+  openSheet(`<h1 style="font-size:19px">${LABEL[c]}</h1><p class="small muted" style="margin-top:4px">Swapping this changes nothing else in your plan.</p>`+
+    D().cats[c].map((x,n)=>{ const d=priceOf(c,n)-cur, nt=t+d, sold=isSold(c,n), on=n===S.tiers[c]&&!sold;
+      return `<button class="tier ${on?'on':''}" data-n="${n}" ${sold?'disabled':''}>
+        <div class="row"><b>${x.name}</b><span class="d">${sold?'Sold out':on?fmt(cur):(d>0?'+':'−')+fmt(Math.abs(d))}</span></div>
+        <p>${x.detail}. ${x.why}</p>
+        ${on||sold?(on?'<div class="after"><span class="pill pick">In your plan</span></div>':''):`<div class="after"><span class="pill ${nt>S.budget?'bad':'ok'}">Trip becomes ${fmt(nt)} · ${nt>S.budget?fmt(nt-S.budget)+' over':fmt(S.budget-nt)+' left'}</span></div>`}
+      </button>`; }).join(''));
+  sheet.querySelectorAll('.tier').forEach(b=>b.onclick=()=>{ const before={...S.tiers}, bx={...S.extra}, prev=undoSnap(), was=price(c); S.tiers[c]=+b.dataset.n; S.extra[c]=0; { const fr=was-price(c), r=receiver(c); if(fr>0&&r&&S.view==='plan') S.extra[r]+=fr; } narrate(before,bx); closeSheet(); if(onPick) return onPick(); if(S.view==='plan') offerUndo(prev); updatePlan(); });
+}
+function chip(k){
+  if(k==='dest') return go('options');
+  if(k==='depart'){
+    openSheet(`<h1 style="font-size:19px">When do you leave?</h1><p class="small muted" style="margin-top:4px">I assumed Friday night so you get all of Saturday.</p>`+
+      [['fri','Friday night','Overnight bus. Wake up there.'],['sat','Saturday 6 am',`Day bus. Saves ${fmt(SAT_SAVE)}, costs you Saturday morning.`]].map(([v,l,s])=>
+      `<button class="tier ${S.depart===v?'on':''}" data-v="${v}"><div class="row"><b>${l}</b></div><p>${s}</p></button>`).join(''));
+    sheet.querySelectorAll('.tier').forEach(b=>b.onclick=()=>{ if(S.depart!==b.dataset.v){ S.depart=b.dataset.v; S.newCat='travel'; const o=total()-S.budget;
+      S.narr=(S.depart==='sat'?`Switched to the Saturday 6 am bus, saving ${fmt(SAT_SAVE)}. I removed Saturday morning's activity.`:`Back to Friday night. Saturday morning is yours again.`)+(o>0?` ${fmt(o)} over.`:` ${fmt(-o)} left.`); }
+      closeSheet(); updatePlan(); });
+    return;
+  }
+  toast(k==='from'?'Other cities are outside this prototype.':'Group trips are outside this prototype.');
+}
+
+/* ---------- 5. approve, with a mid-booking change ---------- */
+function viewApprove(mode){
+  const t=total(), over=t-S.budget;
+  const bk=booked(), sx=asideSum();
+  const rows = CATS.map(c=>`<div class="sum"><span class="sw" style="background:${COLOR[c]};margin-top:6px"></span><div class="t"><b>${tier(c).name}</b><span>${detailOf(c)}</span><span>${tier(c).cancel||'Free cancellation until 24 hours before'}</span></div><div class="p">${fmt(priceOf(c,S.tiers[c]))}</div></div>`).join('');
+  const aside = sx ? `<div class="aside"><b>Set aside, not booked: ${fmt(sx)}</b><p>This stays in your account. I won't charge it now. It's your spending money for the trip, and I'll keep track of it while you're there.</p>
+      ${CATS.filter(c=>S.extra[c]).map(c=>`<div class="ar"><span>${XL[c].replace(/^for /,'For ')}</span><span>${fmt(S.extra[c])}</span></div>`).join('')}</div>` : '';
+  const totals = sx ? `<div class="totalrow"><span>Book now</span><span>${fmt(bk)}</span></div>
+      <div class="split"><span>Set aside to spend there</span><b>${fmt(sx)}</b></div>
+      <div class="split"><span>Weekend total</span><b>${fmt(t)}</b></div>` : `<div class="totalrow"><span>Total, all-in</span><span>${fmt(t)}</span></div>`;
+  let top='';
+  if(mode==='changed'){
+    const c=S.sold.cat, gone=D().cats[c][S.sold.tier];
+    top = `<div class="alert"><b>One thing changed while you were reviewing</b>
+      <p class="small">${gone.name} sold its last room 40 seconds ago. Your travel and activities are held and unchanged. Pick a replacement stay and nothing else moves.</p>
+      <div style="display:grid;gap:8px;margin-top:12px">`+
+      D().cats[c].map((x,n)=>{ if(n===S.sold.tier) return ''; const d=priceOf(c,n)-priceOf(c,S.sold.tier), nt=t+d;
+        return `<button class="fixbtn" data-rep="${n}"><div>${x.name}<span>${x.detail}</span></div><span class="pill ${nt>S.budget?'bad':'ok'}">${d>0?'+':'−'}${fmt(Math.abs(d))} · ${nt>S.budget?fmt(nt-S.budget)+' over':'fits'}</span></button>`; }).join('')+
+      `<button class="fixbtn" id="backplan"><div>Go back to the plan<span>Rebalance the budget yourself</span></div>›</button></div></div>`;
+  }
+  app.innerHTML = `<div class="view"><div class="topbar"><button class="back" aria-label="Back to plan">←</button><div><b>Review and book</b><span>${D().name} · ${S.depart==='fri'?'Fri night':'Sat morning'} to Sunday</span></div></div>
+    <div class="pad">${top}
+      ${mode==='checking'?`<div class="card" style="text-align:center;padding:28px 14px"><div class="spinner"></div><b>Holding all three at these prices…</b><p class="small muted" style="margin-top:6px">Checking the bus seat, the room and the activity slots together, so you never end up with half a trip.</p></div>`:
+      `<div class="card">${mode==='changed'?rows.replace(tier(S.sold.cat).name,`<s style="color:var(--bad)">${tier(S.sold.cat).name}</s>`):rows}
+        ${totals}
+        <p class="tiny muted" style="margin-top:6px">Taxes and fees included. ${over>0?'':(over<0?`${fmt(-over)} under your ${fmt(S.budget)}.`:`Exactly your ${fmt(S.budget)}.`)}</p>${aside}</div>
+       ${over>0&&mode!=='changed'?fixHtml(over).replace('class="fix"','class="fix" style="margin:12px 0 0"'):''}
+       ${S.narr&&mode==='updated'?`<div class="narr flash" style="margin:12px 0 0"><div class="spark">✦</div><p>${S.narr}</p></div>`:''}`}
+    </div>
+    <div class="foot">${mode==='checking'||mode==='changed'?'':`<button class="btn" id="lock" ${over>0?'disabled':''}>${over>0?fmt(over)+' over budget':(sx?`Lock ${fmt(bk)} at these prices`:'Lock these prices')}</button><p class="tiny muted" style="text-align:center;margin-top:8px">Nothing is charged at this step.${sx?` The ${fmt(sx)} set aside is never charged.`:''}</p>`}</div></div>`;
+  $('.back').onclick=()=>go('plan');
+  bindFixes(app);
+  const lock=$('#lock'); if(lock) lock.onclick=()=>{
+    viewApprove('checking');
+    setTimeout(()=>{ if(S.view!=='approve') return;
+      if(!S.changeShown){ S.changeShown=true; S.sold={dest:S.dest,cat:'stay',tier:S.tiers.stay}; viewApprove('changed'); }
+      else go('locked');
+    },1700);
+  };
+  app.querySelectorAll('[data-rep]').forEach(b=>b.onclick=()=>{ const before={...S.tiers}; S.tiers.stay=+b.dataset.rep; S.extra.stay=0; narrate(before); S.narr='Replaced the sold-out room. '+S.narr.replace(/^Moved your stay to |^Upgraded to /,m=>m)+' Travel and activities are untouched.'; viewApprove('updated'); });
+  const bp=$('#backplan'); if(bp) bp.onclick=()=>{ const before={...S.tiers}; const n=[0,1,2].filter(x=>x!==S.sold.tier).sort((a,b)=>Math.abs(a-S.sold.tier)-Math.abs(b-S.sold.tier)||a-b)[0]; S.tiers.stay=n; narrate(before); S.narr=`${D().cats.stay[S.sold.tier].name} sold out, so I put in ${tier('stay').name} for now. Swap it or rebalance as you like.`; go('plan'); };
+}
+
+/* ---------- 6. locked ---------- */
+function viewLocked(){
+  let left=15*60;
+  const mmss=()=>`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;
+  app.innerHTML = `<div class="view pad" style="text-align:center">
+    <div class="bigtick">✓</div><h1>All three held for <span id="cd">${mmss()}</span></h1>
+    <p class="muted small" style="margin:8px 20px 20px">${D().name}, ${fmt(booked())} all-in${asideSum()?`, plus ${fmt(asideSum())} set aside to spend there`:''}. The seat, the room and the activity slots are reserved together.</p>
+    <div class="card" style="text-align:left">${CATS.map(c=>`<div class="sum"><span class="sw" style="background:${COLOR[c]};margin-top:6px"></span><div class="t"><b>${tier(c).name}</b><span>${tier(c).cancel||'Free cancellation until 24 hours before'}</span></div><div class="p">${fmt(priceOf(c,S.tiers[c]))}</div></div>`).join('')}</div>
+    <div class="foot" style="padding-left:0;padding-right:0"><button class="btn" id="pay">Continue to payment</button><button class="btn ghost" id="again" style="margin-top:8px">Plan another weekend</button></div></div>`;
+  S.timer=setInterval(()=>{ left--; const c=$('#cd'); if(!c||left<=0){clearInterval(S.timer);return;} c.textContent=mmss(); },1000);
+  $('#pay').onclick=()=>toast('Payment is outside the scope of this prototype.');
+  $('#again').onclick=()=>go('home');
+}
+
+(function boot(){
+  const p=new URLSearchParams(location.hash.slice(1));
+  if(p.has('embed')) document.body.classList.add('embed');
+  const v=p.get('v');
+  if(!v) return go('home');
+  S.query='Best I can do for ₹15K this weekend'; S.budget=+(p.get('b')||15000);
+  if(v==='options') return go('options');
+  S.dest=p.get('d')||'gokarna';
+  const t=(p.get('t')||DEST[S.dest].pick.join('')).split('').map(Number); S.extra={travel:0,stay:0,do:0}; S.locked={travel:false,stay:false,do:false}; S.shrunk={travel:false,stay:false,do:false}; S.undo=null; CATS.forEach((c,i)=>S.tiers[c]=t[i]);
+  S.taught=true;
+  if(p.get('x')) p.get('x').split(',').map(Number).forEach((v,i)=>S.extra[CATS[i]]=v||0);
+  if(p.get('lock')) p.get('lock').split(',').forEach(c=>{ if(c in S.locked) S.locked[c]=true; });
+  if(!p.has('x') && !p.has('spare') && v!=='changed') fillSpare();
+  const o=total()-S.budget;
+  S.narr = p.get('n') || (o>0 ? `This is the cheapest ${D().name} I can build and it is still ${fmt(o)} over. Ways to close the gap are listed below.` : `Here is ${D().name} for ${fmt(total())}. Drag the handles on the bar to move money around.`);
+  if(p.get('more')){ S.narrMore=p.get('more'); S.narrFor=S.narr; }
+  if(v==='approve'){ S.changeShown=true; S.view='approve'; return viewApprove(); }
+  if(v==='plan'){ go('plan'); if(p.get('y')) app.scrollTop=+p.get('y'); return; }
+  if(v==='changed'){ S.changeShown=true; S.sold={dest:S.dest,cat:'stay',tier:S.tiers.stay}; S.view='approve'; return viewApprove('changed'); }
+  go('home');
+})();
+</script>
+</body>
+</html>
