@@ -195,6 +195,28 @@ h2{font-size:19px;font-weight:900;color:var(--ink);margin:22px 0 10px}
 .leg .p{font-weight:900;font-size:15px;font-variant-numeric:tabular-nums} .leg .c{color:var(--brand);font-weight:900}
 .leg{padding:4px 0 4px 4px} .lgo{flex:1;display:flex;align-items:center;gap:10px;min-width:0;text-align:left;padding:4px 0}
 .leg .t span.xt{white-space:normal;color:#0b5cff;font-weight:700;font-size:12.5px;margin-top:2px}
+.leg .t span.bk{white-space:normal;color:var(--ink3);font-size:12px;margin-top:1px}
+.tier p.bk{font-size:12.5px;color:var(--ink3);margin-top:6px}
+.tier p.trade{font-size:12.5px;color:#8a5a00;background:#fff7e6;border-radius:8px;padding:6px 8px;margin-top:6px;font-weight:700}
+.grp{font-size:12.5px;color:var(--ink3);margin:-2px 0 8px}
+.grp:empty{display:none}
+.buf{margin:12px 14px 0;display:flex;gap:10px;align-items:flex-start;border-radius:var(--r);padding:12px 14px;font-size:13px}
+.buf b{display:block;font-size:14px} .buf span{color:var(--ink2)} .buf>div{flex:1}
+.buf .bi{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-weight:900;color:#fff;font-size:13px}
+.buf.ok{background:var(--good-soft)} .buf.ok .bi{background:var(--good)}
+.buf.warn{background:#fff7e6;border:1px solid #f3d9a4} .buf.warn .bi{background:#e0a030}
+.buf button{flex:none;align-self:center;background:#fff;border:1px solid var(--brand);color:var(--brand);font-weight:900;border-radius:20px;padding:7px 12px;font-size:13px}
+.item .body em.reach{display:block;font-style:normal;font-size:12px;color:var(--ink3);margin-top:2px}
+.item .body em.reach::before{content:'🛺 '}
+.item .body em.reach.new{animation:flashw 1s ease}
+.modes{display:flex;gap:6px;margin:0 0 8px;background:rgba(255,255,255,.9);border-radius:22px;padding:4px;box-shadow:0 4px 14px rgba(11,42,91,.12)}
+.mode{flex:1;padding:9px 6px;border-radius:18px;font-size:13.5px;font-weight:800;color:var(--ink2)}
+.mode.on{background:var(--brand);color:#fff}
+.places{display:flex;gap:8px;margin:0 0 8px;overflow-x:auto}
+.place{flex:1;background:#fff;border:1.5px solid #dbe6f5;border-radius:14px;padding:9px 10px;font-weight:800;font-size:14px;white-space:nowrap}
+.place.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand)}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.pgrid .tier{margin:0}
 .lk{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:#9aa3ae;transition:background .15s,color .15s,transform .15s}
 .lk svg{width:17px;height:17px} .lk:hover{background:var(--bg)} .lk:active{transform:scale(.9)}
 .lk.on{color:var(--brand);background:var(--brand-soft)}
@@ -290,7 +312,7 @@ const SAT_SAVE = 600;
 
 const DEST = {
   gokarna:{
-    name:'Gokarna', tag:'Best value', pick:[1,1,2],
+    name:'Gokarna', food:1200, tag:'Best value', pick:[1,1,2],
     reason:'Quiet beaches, and the overnight bus means you lose no daylight and take no leave.',
     outFri:['9:30 pm','Overnight from Bengaluru, arrive 6:15 am'],
     outSat:['6:00 am','Day bus from Bengaluru, arrive 2:45 pm'],
@@ -302,9 +324,9 @@ const DEST = {
         {name:'Volvo multi-axle sleeper', detail:'Return, single berth, charging', price:3900, why:'Smoothest ride on the ghat section and a single berth, so no stranger next to you.', keep:'Single berth both ways.', cancel:'Free cancellation until 2 hours before'}
       ],
       stay:[
-        {name:'Saltwater Hostel', detail:'6-bed mixed dorm, 2 nights', price:1800, why:'Best-rated hostel within a 5 minute walk of Kudle beach. Lockers and a common kitchen.', keep:'Same beach, still free cancellation.', cancel:'Free cancellation until Friday noon'},
-        {name:'Kudle Beach Cottages', detail:'Private room, 2 nights', price:4600, why:'Your own room and bathroom, 2 minutes from the sand. 4.4 from 860 stays.', keep:'Private room, same beach.', cancel:'Free cancellation until Friday noon'},
-        {name:'Namaste Bay Resort', detail:'Sea-view room with breakfast, 2 nights', price:7200, why:'Sea view, breakfast included and a pool. The one real splurge available this weekend.', keep:'Breakfast included.', cancel:'Free cancellation until Thursday'}
+        {name:'Saltwater Hostel', detail:'6-bed mixed dorm, 2 nights', price:1500, beds:1, local:500, where:'Gokarna town · 3 km from Kudle beach', reach:'About 15 min by auto from your hostel', why:'The cheapest well-rated bed, but it is in town, so you will take autos to the beaches.', keep:'In town, so autos are included.', cancel:'Free cancellation until Friday noon'},
+        {name:'Kudle Beach Cottages', detail:'Private room, 2 nights', price:4600, beds:2, local:0, where:'On Kudle beach · walk everywhere', reach:'A short walk from your cottage', why:'Your own room and bathroom, 2 minutes from the sand. 4.4 from 860 stays.', keep:'Private room, same beach.', cancel:'Free cancellation until Friday noon'},
+        {name:'Namaste Bay Resort', detail:'Sea-view room with breakfast, 2 nights', price:7200, beds:2, local:200, where:'Om beach · 20 min walk to Kudle', reach:'A short walk or a quick auto from your resort', why:'Sea view, breakfast included and a pool. The one real splurge available this weekend.', keep:'Breakfast included.', cancel:'Free cancellation until Thursday'}
       ],
       do:[
         {name:'Beaches and local food', detail:'Om beach trek, sunset point, thali meals', price:2400, why:'The best of Gokarna is free: the beach-to-beach trek and the sunset. This covers all meals.',
@@ -317,7 +339,7 @@ const DEST = {
     }
   },
   pondy:{
-    name:'Pondicherry', tag:'Shortest trip', pick:[1,1,2],
+    name:'Pondicherry', food:1600, tag:'Shortest trip', pick:[1,1,2],
     reason:'Only 6.5 hours away, so you get the most actual holiday out of 48 hours. Best food of the three.',
     outFri:['10:30 pm','Overnight from Bengaluru, arrive 5:00 am'],
     outSat:['6:00 am','Day bus from Bengaluru, arrive 12:30 pm'],
@@ -329,9 +351,9 @@ const DEST = {
         {name:'Volvo multi-axle sleeper', detail:'Return, single berth', price:3400, why:'Single berth and the smoothest ride.', keep:'Single berth both ways.', cancel:'Free cancellation until 2 hours before'}
       ],
       stay:[
-        {name:'Mango Tree Hostel', detail:'8-bed dorm, 2 nights', price:2200, why:'In the French Quarter, so everything is walkable.', keep:'Still in the French Quarter.', cancel:'Free cancellation until Friday noon'},
-        {name:'Villa Bougainville', detail:'Heritage room, 2 nights', price:5200, why:'A restored French house, 4 minutes from the promenade. 4.5 from 540 stays.', keep:'Private room, same neighbourhood.', cancel:'Free cancellation until Friday noon'},
-        {name:'Promenade House', detail:'Sea-facing room with breakfast, 2 nights', price:8000, why:'On the promenade itself, with breakfast.', keep:'Breakfast included.', cancel:'Free cancellation until Thursday'}
+        {name:'Mango Tree Hostel', detail:'8-bed dorm, 2 nights', price:1500, beds:1, local:600, where:'Near the bus stand · 3 km from White Town', reach:'About 15 min by auto from your hostel', why:'The cheapest well-rated bed. It is outside White Town, so budget for autos.', keep:'Cheapest bed in town.', cancel:'Free cancellation until Friday noon'},
+        {name:'Villa Bougainville', detail:'Heritage room, 2 nights', price:5200, beds:2, local:0, where:'White Town · walk everywhere', reach:'Walkable from your stay', why:'A restored French house, 4 minutes from the promenade. 4.5 from 540 stays.', keep:'Private room, same neighbourhood.', cancel:'Free cancellation until Friday noon'},
+        {name:'Promenade House', detail:'Sea-facing room with breakfast, 2 nights', price:8000, beds:2, local:0, where:'On the promenade · walk everywhere', reach:'Walkable from your stay', why:'On the promenade itself, with breakfast.', keep:'Breakfast included.', cancel:'Free cancellation until Thursday'}
       ],
       do:[
         {name:'Walks, beaches and cafés', detail:'French Quarter walk, Rock beach, café meals', price:2600, why:'Pondicherry is a walking town. This covers meals at good cafés.',
@@ -344,7 +366,7 @@ const DEST = {
     }
   },
   goa:{
-    name:'Goa', tag:'Most popular', pick:[0,0,0],
+    name:'Goa', food:1800, tag:'Most popular', pick:[0,0,0],
     reason:'It is what most people search for, but it is a long weekend and prices are up sharply.',
     outFri:['7:00 pm','Overnight from Bengaluru, arrive 7:30 am'],
     outSat:['5:30 am','Day bus from Bengaluru, arrive 2:30 pm'],
@@ -356,9 +378,9 @@ const DEST = {
         {name:'Flight', detail:'Return, cabin bag only', price:9800, why:'Saves 20 hours of travel across the weekend.', keep:'90 minute flight.', cancel:'Non-refundable'}
       ],
       stay:[
-        {name:'Driftwood Hostel, Anjuna', detail:'8-bed dorm, 2 nights', price:5800, why:'The cheapest bed with good reviews. Long-weekend rates are roughly double.', keep:'Same area.', cancel:'Free cancellation until Thursday'},
-        {name:'Casa Vagator', detail:'Private room, 2 nights', price:7400, why:'Private room near Vagator.', keep:'Private room.', cancel:'Free cancellation until Thursday'},
-        {name:'Assagao Garden Stay', detail:'Room with pool and breakfast, 2 nights', price:9800, why:'Pool and breakfast in a quiet village.', keep:'Breakfast included.', cancel:'Non-refundable'}
+        {name:'Driftwood Hostel, Anjuna', detail:'8-bed dorm, 2 nights', price:5800, beds:1, local:300, where:'Anjuna · 1 km from the beach', reach:'5 to 10 min by scooter', why:'The cheapest bed with good reviews. Long-weekend rates are roughly double.', keep:'Same area.', cancel:'Free cancellation until Thursday'},
+        {name:'Casa Vagator', detail:'Private room, 2 nights', price:7400, beds:2, local:300, where:'Vagator · 1 km from the beach', reach:'5 to 10 min by scooter', why:'Private room near Vagator.', keep:'Private room.', cancel:'Free cancellation until Thursday'},
+        {name:'Assagao Garden Stay', detail:'Room with pool and breakfast, 2 nights', price:9800, beds:2, local:700, where:'Assagao village · 6 km from the beaches', reach:'About 20 min by scooter from Assagao', why:'Pool and breakfast in a quiet village, but 6 km inland, so add fuel or cabs.', keep:'Breakfast included.', cancel:'Non-refundable'}
       ],
       do:[
         {name:'Beaches and shacks', detail:'Scooter hire, beach shacks, Chapora fort', price:4800, why:'You need a scooter in Goa, so the base cost is higher than elsewhere.',
@@ -373,22 +395,29 @@ const DEST = {
 };
 
 /* ---------- state ---------- */
-const S = {view:'home', query:'', budget:15000, dest:null, tiers:{travel:0,stay:0,do:0}, extra:{travel:0,stay:0,do:0}, locked:{travel:false,stay:false,do:false}, shrunk:{travel:false,stay:false,do:false}, depart:'fri',
+const S = {view:'home', query:'', budget:15000, people:1, known:null, dest:null, tiers:{travel:0,stay:0,do:0}, extra:{travel:0,stay:0,do:0}, locked:{travel:false,stay:false,do:false}, shrunk:{travel:false,stay:false,do:false}, depart:'fri',
   narrMore:'', narrFor:'', narrOpen:false, undo:null,
   sold:null, changeShown:false, narr:'', fresh:'ok', freshTries:0, openWhy:{}, newCat:null, timer:null};
 const $ = (q,el=document)=>el.querySelector(q);
 const app = $('#app'), sheet = $('#sheet');
 const fmt = n => '₹' + (Math.round(n)+0).toLocaleString('en-IN');
 const D = () => DEST[S.dest];
-const priceOf = (c,t,d=S.dest,dep=S.depart) => DEST[d].cats[c][t].price - (c==='travel' && dep==='sat' ? SAT_SAVE : 0);
+/* prices are per person. Dorm beds are per person; private rooms sleep two; autos are shared by up to three. */
+const ppl = () => S.people||1;
+const roomPP = (x,n=ppl()) => x.beds===1 ? x.price : Math.round(x.price*Math.ceil(n/x.beds)/n/50)*50;
+const localPP = (x,n=ppl()) => Math.round((x.local||0)*Math.ceil(n/3)/n/50)*50;
+const priceOf = (c,t,d=S.dest,dep=S.depart) => { const x=DEST[d].cats[c][t]; return c==='stay' ? roomPP(x)+localPP(x) : x.price - (c==='travel' && dep==='sat' ? SAT_SAVE : 0); };
+const bookOf = (c,t) => c==='stay' ? roomPP(D().cats.stay[t]) : priceOf(c,t);
 const price = c => priceOf(c,S.tiers[c]) + (S.extra[c]||0);
 const XL = {travel:'for cabs and autos there', stay:'for late checkout or a room upgrade', do:'for food and extras'};
 const NM = {travel:'Travel', stay:'Stay', do:'Do'}, NML = {travel:'travel', stay:'your stay', do:'activities'};
 const detailOf = c => D().cats[c][S.tiers[c]].detail;
 const xtraOf = c => S.extra[c] ? `+ ${fmt(S.extra[c])} set aside ${XL[c]}` : '';
 const total = () => CATS.reduce((s,c)=>s+price(c),0);
-const booked = () => CATS.reduce((s,c)=>s+priceOf(c,S.tiers[c]),0);
+const booked = () => CATS.reduce((s,c)=>s+bookOf(c,S.tiers[c]),0);
 const asideSum = () => CATS.reduce((s,c)=>s+(S.extra[c]||0),0);
+const spendThere = () => asideSum() + localPP(tier('stay'));
+const pplTxt = (n=ppl()) => n+' '+(n>1?'people':'person');
 const LOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const UNLOCK_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 7.6-1.8"/></svg>';
 const tier = c => D().cats[c][S.tiers[c]];
@@ -411,6 +440,16 @@ function parseBudget(q){
   if(n<1000) return 15000;
   return Math.min(60000,Math.max(2000,Math.round(n/100)*100));
 }
+/* who is going: "with my partner", "four of us", "with two friends" */
+function parsePeople(q){
+  const W={one:1,two:2,three:3,four:4,five:5,six:6}, s=q.toLowerCase(), n=v=>+v||W[v];
+  let m=s.match(/with (\d|one|two|three|four|five) (friends?|others|people)/); if(m) return Math.min(6,n(m[1])+1);
+  m=s.match(/(\d|two|three|four|five|six) (of us|people|persons|adults|friends)/); if(m) return Math.min(6,n(m[1]));
+  if(/partner|girlfriend|boyfriend|wife|husband|couple|both of us/.test(s)) return 2;
+  return 1;
+}
+const isTotal = q => !/each|per person|a head/i.test(q) && /both|total|altogether|together|between us|of us|for us/i.test(q);
+const parseDest = q => /gokarna/i.test(q)?'gokarna':/pondi|puducherry/i.test(q)?'pondy':/\bgoa\b/i.test(q)?'goa':null;
 function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('on'); clearTimeout(toast.t); toast.t=setTimeout(()=>t.classList.remove('on'),2400); }
 function go(v){ clearInterval(S.timer); S.view=v; closeSheet(); ({home:viewHome,planning:viewPlanning,options:viewOptions,plan:viewPlan,approve:viewApprove,locked:viewLocked})[v](); app.scrollTop=0; }
 
@@ -419,14 +458,17 @@ function viewHome(){
   const big = [['✈️','Flights'],['🏨','Hotels'],['🏖️','Holiday<br>Packages'],['🚆','Trains/<br>Bus']];
   const small = [['🚕','Airport Cabs<br>&amp; Rentals'],['🏡','Villas &amp;<br>Homestays'],['🚙','Outstation<br>Cabs'],['💱','Forex Card<br>&amp; Currency'],
                  ['🎈','Tours &amp;<br>Attractions',1],['🛏️','Hourly Stays'],['🛂','Visa'],['🛡️','Travel<br>Insurance']];
-  const asks = ['Best I can do for ₹15K this weekend','Somewhere quiet for ₹8K, leaving Friday night','Anything for ₹5K this weekend?'];
+  const asks = ['Best I can do for ₹15K this weekend','Pondicherry with my partner, ₹12K for both of us','Four of us, ₹7K each, this weekend'];
+  const ph = S.known ? `${DEST[S.known].name}, ₹12K for two of us…` : 'I have ₹15K for this weekend…';
   app.innerHTML = `<div class="view home">
     <div class="hero">
       <div class="herobar"><span class="burger"><i></i><i></i><i></i></span><span style="flex:1"></span><span class="mycash"><i>my</i>Cash</span><span class="mybiz"><i>my</i>Biz</span></div>
       <div class="banner"><small>✦ LIVE NOW ✦</small><b>Weekend Agent</b><span>Tell me your budget. I'll plan the whole weekend.</span></div>
     </div>
-    <div class="aiwrap"><div class="aibox">
-      <textarea id="q" rows="2" placeholder="I have ₹15K for this weekend…" aria-label="Describe your trip"></textarea>
+    <div class="aiwrap"><div class="modes" role="tablist"><button class="mode ${S.known?'':'on'}" data-m="find" role="tab" aria-selected="${!S.known}">Find me a place</button><button class="mode ${S.known?'on':''}" data-m="know" role="tab" aria-selected="${!!S.known}">I know where I'm going</button></div>
+      ${S.known?`<div class="places">${Object.keys(DEST).map(k=>`<button class="place ${S.known===k?'on':''}" data-k="${k}">${DEST[k].name}</button>`).join('')}</div>`:''}
+      <div class="aibox">
+      <textarea id="q" rows="2" placeholder="${ph}" aria-label="Describe your trip"></textarea>
       <button class="orb" id="goBtn" aria-label="Plan my weekend">✦</button>
     </div></div>
     <div class="shead"><b>Try asking</b><span>Weekend Agent <em class="newtag">new</em></span></div>
@@ -440,7 +482,11 @@ function viewHome(){
       <div><i>🤍</i>Wishlists</div><div><i>💳</i>Credit Card</div>
     </div>
   </div>`;
-  const start = q => { S.query = q.trim() || asks[0]; S.budget = parseBudget(S.query); S.depart='fri'; S.sold=null; S.changeShown=false; go('planning'); };
+  const start = q => { S.query = q.trim() || asks[0]; S.people = parsePeople(S.query); const b=parseBudget(S.query), tot=isTotal(S.query)&&S.people>1;
+    S.budget = tot ? Math.round(b/S.people/100)*100 : b; S.typedTotal = tot ? b : 0;
+    S.known = parseDest(S.query) || S.known; S.depart='fri'; S.sold=null; S.changeShown=false; go('planning'); };
+  app.querySelectorAll('.mode').forEach(b=>b.onclick=()=>{ const know=b.dataset.m==='know'; S.known = know ? (S.known||'pondy') : null; viewHome(); if(know) $('#q').focus(); });
+  app.querySelectorAll('.place').forEach(b=>b.onclick=()=>{ S.known=b.dataset.k; viewHome(); $('#q').focus(); });
   app.querySelectorAll('.starter').forEach(b=>b.onclick=()=>start(b.dataset.q));
   $('#goBtn').onclick = ()=>start($('#q').value);
   $('#navOrb').onclick = ()=>{ app.scrollTop=0; $('#q').focus(); };
@@ -449,13 +495,21 @@ function viewHome(){
 
 /* ---------- 2. planning (transparent loading) ---------- */
 function viewPlanning(){
-  const steps = [
-    ['done',`Read your ask`,`${fmt(S.budget)} all-in · this weekend · 1 person. I'm assuming you leave from Bengaluru on Friday night.`],
+  const who = `${fmt(S.budget)} each · ${pplTxt()}${S.typedTotal?` (${fmt(S.typedTotal)} between you)`:''}`;
+  const steps = S.known ? [
+    ['done',`Read your ask`,`${DEST[S.known].name} · ${who} · this weekend. I'm assuming you leave from Bengaluru on Friday night.`],
+    ['done','Checked buses, trains and flights',`Routes to ${DEST[S.known].name} and back by Monday morning.`],
+    ['done',`Priced stays in and around ${DEST[S.known].name}`,'Including the cheaper ones further out.'],
+    ['done','Added the cost of getting around','Autos or a scooter from each stay, so a cheap room far away shows its real price.'],
+    ['done','Built one complete plan','Taxes, food and getting around included.']
+  ] : [
+    ['done',`Read your ask`,`${who} · this weekend. I'm assuming you leave from Bengaluru on Friday night.`],
     ['done','Checked buses, trains and flights','14 routes that get you there and back by Monday morning.'],
     ['done','Priced stays for 2 nights','41 places with ratings above 4.0.'],
     ['drop','Dropped Varkala','The only return gets in at 2 am Monday.'],
     ['drop','Dropped Hampi','No beach. I guessed you want one, and you can change that.'],
-    ['done','Built complete plans','Each one totalled with taxes and fees included.']
+    ['done','Added food and getting around','Meals, plus autos from each stay: the costs people usually forget.'],
+    ['done','Built complete plans','Each one totalled with taxes, food and getting around included.']
   ];
   app.innerHTML = `<div class="view pad"><div style="padding-top:26px">
     <p class="tiny muted">"${escapeHtml(S.query)}"</p>
@@ -464,7 +518,7 @@ function viewPlanning(){
   const box = $('#steps'); let i=0;
   const next = ()=>{
     if(S.view!=='planning') return;
-    if(i>=steps.length){ setTimeout(()=>S.view==='planning'&&go('options'),500); return; }
+    if(i>=steps.length){ setTimeout(()=>{ if(S.view!=='planning') return; if(S.known) openPlan(S.known, pickFor(S.known,S.budget).pick, true); else go('options'); },500); return; }
     const [kind,t,sub]=steps[i++];
     const el=document.createElement('div'); el.className='step run';
     el.innerHTML=`<div class="dot"></div><div><p>${t}…</p></div>`; box.appendChild(el);
@@ -473,6 +527,15 @@ function viewPlanning(){
   next();
 }
 function escapeHtml(s){return s.replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+/* open a destination as a full plan. known = the user named the place, so there was no list to pick from */
+function openPlan(k,pick,known){ S.dest=k; S.extra={travel:0,stay:0,do:0}; S.locked={travel:false,stay:false,do:false}; S.shrunk={travel:false,stay:false,do:false}; S.undo=null; CATS.forEach((c,i)=>S.tiers[c]=pick[i]); S.openWhy={}; S.newCat=null;
+  const o=total()-S.budget, sp=o<0?fillSpare():0, st=tier('stay');
+  S.narr = o>0 ? `This is the cheapest ${D().name} I can build and it is still ${fmt(o)} over. I've listed ways to close the gap below.`
+    : (known?`You picked ${D().name}, so I built one plan around it. `:'') + `Here's ${D().name} using your full ${fmt(S.budget)}${ppl()>1?' each':''}. `
+      + (st.local?`${st.name} is cheaper because it's further out, so I've added ${fmt(localPP(st))} for getting around.`:`I spent more on ${S.tiers.do===2?'doing things':'the stay'} because that's where the weekend is.`)
+      + (sp?` ${fmt(sp)} is kept aside for food and surprises.`:'') + ' Drag the handles to move money around.';
+  go('plan'); }
 
 /* ---------- 3. options ---------- */
 function viewOptions(){
@@ -505,15 +568,11 @@ function viewOptions(){
       </div></div><h2>For reference</h2>${rows.map(card).join('')}`;
   }
   app.innerHTML = `<div class="view">
-    <div class="lhead"><div class="lbox"><button class="back" aria-label="Back">←</button><div class="lt"><b>Weekends from Bengaluru</b><span>This weekend, 1 traveller, ${fmt(S.budget)}</span></div><button class="pen" aria-label="Edit search">✎</button></div></div>
+    <div class="lhead"><div class="lbox"><button class="back" aria-label="Back">←</button><div class="lt"><b>Weekends from Bengaluru</b><span>This weekend, ${pplTxt()}, ${fmt(S.budget)} each</span></div><button class="pen" aria-label="Edit search">✎</button></div></div>
     <div class="fchips"><span>Sort ⇅</span><span class="on">Within ${fmt(S.budget)}</span><span>Beach</span><span>Price ⌄</span></div>
     <div class="pad">${head}<div style="margin-top:14px">${body}</div></div></div>`;
   $('.back').onclick=()=>go('home'); $('.pen').onclick=()=>go('home');
-  const open = (k,pick)=>{ S.dest=k; S.extra={travel:0,stay:0,do:0}; S.locked={travel:false,stay:false,do:false}; S.shrunk={travel:false,stay:false,do:false}; S.undo=null; CATS.forEach((c,i)=>S.tiers[c]=pick[i]); S.openWhy={}; S.newCat=null;
-    const o=total()-S.budget, sp=o<0?fillSpare():0;
-    S.narr = o>0 ? `This is the cheapest ${D().name} I can build and it is still ${fmt(o)} over. I've listed ways to close the gap below.`
-                 : `Here's ${D().name} using your full ${fmt(S.budget)}. I spent more on ${S.tiers.do===2?'doing things':'the stay'} because that's where the weekend is${sp?`, and set aside ${fmt(sp)} for food and extras`:''}. Drag the handles to move money around.`;
-    go('plan'); };
+  const open = (k,pick)=>openPlan(k,pick);
   app.querySelectorAll('.opt').forEach(b=>b.onclick=()=>open(b.dataset.k, rows.find(r=>r.k===b.dataset.k).pick));
   if(!fits.length){
     const c = rows.slice().sort((a,b)=>a.total-b.total)[0];
@@ -530,6 +589,7 @@ function viewPlan(){
     <div class="chips" id="chips"></div>
     <div class="card budget" id="budget">
       <div class="head"><div class="amt" id="amt"></div><span class="pill" id="pill"></span></div>
+      <p class="grp" id="grp"></p>
       <div class="bar" id="bar">
         <div class="track"><div class="seg travel"><span class="sl"><em>Travel</em><b></b></span></div><div class="seg stay"><span class="sl"><em>Stay</em><b></b></span></div><div class="seg do"><span class="sl"><em>Do</em><b></b></span></div><div class="leftlab" id="leftlab"></div><div class="seg over"></div></div>
         <div class="ticks" id="ticks"></div><div class="tip" id="tip"></div>
@@ -543,6 +603,7 @@ function viewPlan(){
       <div class="fresh" id="fresh"></div>
     </div>
     <div class="narr" id="narr"><div class="spark">✦</div><div class="nb"><p></p><div class="more" id="more"></div></div></div>
+    <div id="buf"></div>
     <div id="fix"></div>
     <div id="days"></div>
     <div class="foot"><div id="snackbox"></div><button class="btn" id="review"></button></div>
@@ -577,11 +638,12 @@ function updatePlan(flash=true){
   // chips
   $('#chips').innerHTML = [
     ['depart', S.depart==='fri'?'Leaving Fri night':'Leaving Sat 6 am'],
-    ['from','From Bengaluru'],['who','1 person'],['dest',`${D().name}`]
+    ['from','From Bengaluru'],['who',pplTxt()],['dest',`${D().name}`]
   ].map(([k,l])=>`<button class="chip" data-k="${k}">${l}<u>✎</u></button>`).join('');
   $('#chips').querySelectorAll('.chip').forEach(b=>b.onclick=()=>chip(b.dataset.k));
   // header
   tweenAmt(t);
+  $('#grp').textContent = ppl()>1 ? `Per person · ${fmt(t*ppl())} for ${ppl()===2?"both":"all "+ppl()} of you` : '';
   const pill=$('#pill'); pill.className='pill '+(over>0?'bad':'ok'); pill.textContent = over>0?`${fmt(over)} over`:`${fmt(-over)} left`;
   // bar
   let x=0; const pos=[];
@@ -608,7 +670,7 @@ function updatePlan(flash=true){
   app.querySelectorAll('.handle').forEach((h,i)=>{ h.style.left=Math.min(pos[i],97)+'%'; h.setAttribute('aria-valuetext',`${LABEL[CATS[i]]} ${fmt(price(CATS[i]))}`+(CATS[i+1]?`, ${LABEL[CATS[i+1]]} ${fmt(price(CATS[i+1]))}`:'')); });
   // legend
   $('#legend').innerHTML = CATS.map(c=>`<div class="leg ${S.newCat===c?'new':''}"><button class="lgo" data-c="${c}"><span class="sw" style="background:${COLOR[c]}"></span>
-    <span class="t"><b>${LABEL[c]}</b><span>${tier(c).name} · ${detailOf(c)}</span>${S.extra[c]?`<span class="xt">${xtraOf(c)}</span>`:''}</span><span class="p">${fmt(price(c))}</span><span class="c">›</span></button>
+    <span class="t"><b>${LABEL[c]}</b><span>${tier(c).name} · ${detailOf(c)}</span>${legBreak(c)}${S.extra[c]?`<span class="xt">${xtraOf(c)}</span>`:''}</span><span class="p">${fmt(price(c))}</span><span class="c">›</span></button>
     <button class="lk ${S.locked[c]?'on':''}" data-lock="${c}" aria-pressed="${!!S.locked[c]}" aria-label="${S.locked[c]?'Unlock':'Lock'} ${LABEL[c].toLowerCase()}">${S.locked[c]?LOCK_SVG:UNLOCK_SVG}</button></div>`).join('');
   $('#legend').querySelectorAll('.lgo').forEach(b=>b.onclick=()=>openTiers(b.dataset.c));
   $('#legend').querySelectorAll('[data-lock]').forEach(b=>b.onclick=()=>toggleLock(b.dataset.lock));
@@ -619,6 +681,12 @@ function updatePlan(flash=true){
     m.innerHTML = has ? `<button id="moreb">${S.narrOpen?'Hide changes':'See all changes'}</button>${S.narrOpen?`<p>${S.narrMore}</p>`:''}` : '';
     if(has) $('#moreb').onclick=()=>{ S.narrOpen=!S.narrOpen; updatePlan(false); }; }
   if(flash){ n.classList.remove('flash'); void n.offsetWidth; n.classList.add('flash'); }
+  // buffer: everyone we spoke to overspent, mostly on food and autos
+  { const b=$('#buf'), aside=asideSum(), need=Math.round(S.budget*0.1/100)*100;
+    b.innerHTML = over>0 ? '' : aside>=need
+      ? `<div class="buf ok"><span class="bi">✓</span><div><b>${fmt(aside)} kept aside for food and surprises</b><span>${Math.round(aside/S.budget*100)}% of your budget. Weekend trips usually run over on meals and autos, so this is spending money, not booked.</span></div></div>`
+      : `<div class="buf warn"><span class="bi">!</span><div><b>${aside?`Only ${fmt(aside)} kept aside`:'Nothing kept aside'}</b><span>Weekend trips usually run 15 to 40% over, mostly on food and autos. A 10% buffer is ${fmt(need)}.</span></div><button id="bufb">Make room</button></div>`;
+    const bb=$('#bufb'); if(bb) bb.onclick=makeBuffer; }
   // fixes
   $('#fix').innerHTML = over>0 ? fixHtml(over) : '';
   bindFixes($('#fix'));
@@ -627,9 +695,48 @@ function updatePlan(flash=true){
   $('#days').querySelectorAll('[data-swap]').forEach(b=>b.onclick=()=>openTiers(b.dataset.swap));
   $('#days').querySelectorAll('[data-why]').forEach(b=>b.onclick=()=>{ S.openWhy[b.dataset.why]=!S.openWhy[b.dataset.why]; updatePlan(false); });
   // footer
-  const r=$('#review'); r.disabled=over>0; r.textContent = over>0?`${fmt(over)} over budget · pick a fix above`:(asideSum()?`Review and book · ${fmt(booked())} now`:`Review and book · ${fmt(t)}`);
+  const r=$('#review'); r.disabled=over>0; r.textContent = over>0?`${fmt(over)} over budget · pick a fix above`:(spendThere()?`Review and book · ${fmt(booked())} now`:`Review and book · ${fmt(t)}`);
   renderSnack();
   S.newCat=null;
+}
+
+/* the hidden costs, shown: a stay's price includes getting around from it; Do includes meals */
+function legBreak(c){
+  if(c==='stay'){ const x=tier('stay'), l=localPP(x); return `<span class="bk">${l?`Room ${fmt(roomPP(x))} + ${fmt(l)} getting around`:`Room ${fmt(roomPP(x))} · no autos needed`} · ${x.where}</span>`; }
+  if(c==='do') return `<span class="bk">Includes about ${fmt(D().food)} for meals</span>`;
+  return '';
+}
+/* free up 10% as a buffer by stepping one part down, and keep the money aside for food */
+function makeBuffer(){
+  const need=Math.round(S.budget*0.1/100)*100, short=need-asideSum(); if(short<=0) return;
+  const before={...S.tiers}, bx={...S.extra}, prev=undoSnap(), opts=[];
+  ['do','stay','travel'].forEach(c=>{ if(S.locked[c]) return; for(let n=S.tiers[c]-1;n>=0;n--){ if(isSold(c,n)) continue; opts.push({c,n,free:priceOf(c,S.tiers[c])-priceOf(c,n)}); break; } });
+  if(!opts.length) return toast('Everything is already at its cheapest. Unlock a part or raise the budget.');
+  opts.sort((a,b)=>((a.free<short)-(b.free<short)) || a.free-b.free);
+  const o=opts[0], r=['do','stay','travel'].find(c=>!S.locked[c]);
+  S.tiers[o.c]=o.n; S.extra[r]=(S.extra[r]||0)+o.free;
+  narrate(before,bx); S.narr='Made room for a buffer. '+S.narr; S.newCat=o.c; offerUndo(prev); updatePlan();
+}
+/* group size: rooms sleep two and autos are shared, so the count changes what each person pays */
+function openPeople(){
+  const x=tier('stay');
+  openSheet(`<h1 style="font-size:19px">Who's going?</h1><p class="small muted" style="margin-top:4px">Your budget stays ${fmt(S.budget)} each. Rooms sleep two and autos are shared, so the number of people changes what each person pays.</p>
+    <div class="pgrid">${[1,2,3,4,5,6].map(n=>`<button class="tier ${n===ppl()?'on':''}" data-n="${n}"><div class="row"><b>${pplTxt(n)}</b></div><p>${x.name}: ${fmt(roomPP(x,n)+localPP(x,n))} each</p></button>`).join('')}</div>`);
+  sheet.querySelectorAll('[data-n]').forEach(b=>b.onclick=()=>setPeople(+b.dataset.n));
+}
+function setPeople(n){
+  const was=ppl(); if(n===was) return closeSheet();
+  const prev=undoSnap(), x=tier('stay'), r0=roomPP(x,was), st0=price('stay');
+  S.people=n; closeSheet();
+  const d=price('stay')-st0; let took=0;
+  if(d>0 && !S.locked.do){ took=Math.min(d,S.extra.do||0); S.extra.do-=took; }
+  else if(d<0 && !S.locked.do) S.extra.do=(S.extra.do||0)-d;
+  const o=total()-S.budget, r1=roomPP(x,n), rooms=Math.ceil(n/(x.beds||1));
+  S.narr = `${n<was?'Down':'Up'} to ${pplTxt(n)}. ` + (x.beds===1
+      ? `Dorm beds are priced per person, so ${x.name} still costs ${fmt(r1)} each.`
+      : `${x.name} now costs ${fmt(r1)} each instead of ${fmt(r0)}: ${rooms} room${rooms>1?'s':''} shared by ${n}.`)
+    + (o>0?`${took?` I used the ${fmt(took)} kept aside, and you're still`:' That puts you'} ${fmt(o)} over, so I've listed cheaper stays below.`:(d>0?' I took it from the money kept aside.':(d<0?` The ${fmt(-d)} saved each is kept aside.`:'')));
+  S.newCat='stay'; offerUndo(prev, `${pplTxt(n)}`); updatePlan();
 }
 
 /* lock a part so stretching the others never touches it */
@@ -644,7 +751,7 @@ function lockedNudge(c){
 }
 
 /* undo: a snackbar for 5 seconds after any change that moved more than one thing */
-const undoSnap = () => ({t:{...S.tiers}, x:{...S.extra}, sh:{...S.shrunk}, narr:S.narr, depart:S.depart, budget:S.budget});
+const undoSnap = () => ({t:{...S.tiers}, x:{...S.extra}, sh:{...S.shrunk}, narr:S.narr, depart:S.depart, budget:S.budget, people:ppl()});
 function offerUndo(prev, label){
   clearTimeout(S.undoT); S.undo={...prev, label:label||S.narr.split('. ')[0].replace(/\.$/,''), at:Date.now()};
   S.undoT=setTimeout(()=>{ S.undo=null; renderSnack(); },5000);
@@ -654,7 +761,7 @@ function renderSnack(){
   if(!S.undo){ box.innerHTML=''; return; }
   if(!$('.snack',box) || box.dataset.at!=S.undo.at){ box.dataset.at=S.undo.at;
     box.innerHTML=`<div class="snack" role="status"><i></i><span></span><button id="undob">Undo</button></div>`;
-    $('#undob').onclick=()=>{ const u=S.undo; if(!u) return; S.tiers=u.t; S.extra=u.x; S.shrunk=u.sh; S.depart=u.depart; S.budget=u.budget; S.narr=u.narr; S.undo=null; clearTimeout(S.undoT); updatePlan(); toast('Undone. Back to how it was.'); };
+    $('#undob').onclick=()=>{ const u=S.undo; if(!u) return; S.tiers=u.t; S.extra=u.x; S.shrunk=u.sh; S.depart=u.depart; S.budget=u.budget; S.people=u.people||1; S.narr=u.narr; S.undo=null; clearTimeout(S.undoT); updatePlan(); toast('Undone. Back to how it was.'); };
     const ring=$('i',box), t0=S.undo.at; (function tick(){ if(!ring.isConnected) return; const p=Math.max(0,1-(Date.now()-t0)/5000); ring.style.setProperty('--p',p*100+'%'); if(p>0) requestAnimationFrame(tick); })(); }
   $('span',box).textContent=S.undo.label;
 }
@@ -675,10 +782,10 @@ function itineraryHtml(){
   const tv=tier('travel'), st=tier('stay');
   const out = S.depart==='fri'?d.outFri:d.outSat;
   items.push({day:S.depart==='fri'?'Fri':'Sat',ord:S.depart==='fri'?2130:600,time:out[0],title:tv.name,sub:out[1],cat:'travel',key:'out'});
-  items.push({day:'Sat',ord:S.depart==='fri'?800:1500,time:S.depart==='fri'?'8:00 am':'3:00 pm',title:'Check in: '+st.name,sub:st.detail+(S.depart==='fri'?' · early check-in arranged':''),cat:'stay',key:'stay'});
+  items.push({day:'Sat',ord:S.depart==='fri'?800:1500,time:S.depart==='fri'?'8:00 am':'3:00 pm',title:'Check in: '+st.name,sub:st.detail+' · '+st.where+(S.depart==='fri'?' · early check-in arranged':''),cat:'stay',key:'stay'});
   for(let i=0;i<=S.tiers.do;i++) d.cats.do[i].add.forEach((a,j)=>{
     if(S.depart==='sat' && a[0]==='Sat' && a[4]) return;
-    items.push({day:a[0],ord:toOrd(a[1]),time:a[1],title:a[2],sub:a[3],cat:'do',key:'do'+i+j,first:i===S.tiers.do&&j===0});
+    items.push({day:a[0],ord:toOrd(a[1]),time:a[1],title:a[2],sub:a[3],reach:st.reach,cat:'do',key:'do'+i+j,first:i===S.tiers.do&&j===0});
   });
   items.push({day:'Sun',ord:1100,time:'11:00 am',title:'Check out',sub:'Bags can stay at reception',cat:'stay',key:'out2',plain:true});
   items.push({day:'Sun',ord:toOrd(d.back[0]),time:d.back[0],title:tv.name+' home',sub:d.back[1],cat:'travel',key:'back',plain:true});
@@ -688,7 +795,7 @@ function itineraryHtml(){
     return `<div class="day"><h2>${names[day]}</h2><div class="card" style="padding:2px 14px">${list.map(it=>{
       const showActs = !it.plain && (it.cat!=='do' || it.first);
       return `<div class="item ${S.newCat===it.cat?'new':''}"><div class="bar3" style="background:${COLOR[it.cat]}"></div><div class="time">${it.time}</div><div class="body">
-        <b>${it.title}</b><span>${it.sub}</span>
+        <b>${it.title}</b><span>${it.sub}</span>${it.reach?`<em class="reach ${S.newCat==='stay'?'new':''}">${it.reach}</em>`:''}
         ${showActs?`<div class="acts"><button data-why="${it.key}">${S.openWhy[it.key]?'Hide reason':'Why this?'}</button><button data-swap="${it.cat}">Swap</button></div>`:''}
         ${S.openWhy[it.key]?`<div class="why">${tier(it.cat).why}</div>`:''}
       </div></div>`;}).join('')}</div></div>`;
@@ -759,6 +866,9 @@ function narrate(before,bx,primary){
     S.newCat=c;
     if(d<0){ ch.push({c,txt: c==='do' ? `Cut activities back to ${lower(t.name).replace(/^add /,'')}, freeing ${fmt(-d)}.` : `Moved ${c==='travel'?'your travel':'your stay'} to ${lower(t.name)}, freeing ${fmt(-d)}.`, down:true}); if(c!==primary) keep=t.keep; }
     else ch.push({c,txt:`${c==='do'?'Added':'Upgraded to'} ${lower(t.name).replace(/^add /,'')} for ${fmt(d)} more.`});
+    if(c==='stay'){ const o=D().cats.stay[before.stay], dr=roomPP(t)-roomPP(o), dl=localPP(t)-localPP(o);
+      if(dr<0 && dl>0) ch[ch.length-1].txt+=` The room is ${fmt(-dr)} cheaper, but it's further out, so autos add ${fmt(dl)}.`;
+      else if(dr>0 && dl<0) ch[ch.length-1].txt+=` The room costs ${fmt(dr)} more, but you'll walk instead of taking autos, saving ${fmt(-dl)}.`; }
   });
   if(bx) CATS.forEach(c=>{ const dx=S.extra[c]-bx[c];
     if(dx>0){ ch.push({c,txt:`Set aside ${fmt(dx)} more ${XL[c]}.`}); S.newCat=c; }
@@ -818,11 +928,17 @@ function openSheet(html){ sheet.innerHTML=`<div class="scrim"></div><div class="
 function closeSheet(){ sheet.classList.remove('open'); sheet.innerHTML=''; }
 function openTiers(c, onPick){
   const cur=price(c), t=total();
-  openSheet(`<h1 style="font-size:19px">${LABEL[c]}</h1><p class="small muted" style="margin-top:4px">Swapping this changes nothing else in your plan.</p>`+
+  const cx=tier(c);
+  openSheet(`<h1 style="font-size:19px">${LABEL[c]}</h1><p class="small muted" style="margin-top:4px">${c==='stay'?'Prices include getting around from each stay, so a cheap room far away shows its real cost. ':''}Swapping this changes nothing else in your plan.</p>`+
     D().cats[c].map((x,n)=>{ const d=priceOf(c,n)-cur, nt=t+d, sold=isSold(c,n), on=n===S.tiers[c]&&!sold;
+      let net='';
+      if(c==='stay'){ const dr=roomPP(x)-roomPP(cx), dl=localPP(x)-localPP(cx);
+        net = `<p class="bk">Room ${fmt(roomPP(x))} + ${fmt(localPP(x))} getting around · ${x.where}</p>`;
+        if(!on && dr<0 && dl>0) net+=`<p class="trade">The room saves ${fmt(-dr)}, but autos add ${fmt(dl)}. You really save ${fmt(Math.max(0,-d))}${d>=0?' (nothing)':''}.</p>`;
+        else if(!on && dr>0 && dl<0) net+=`<p class="trade">The room costs ${fmt(dr)} more, but you save ${fmt(-dl)} on autos, so the real difference is ${fmt(d)}.</p>`; }
       return `<button class="tier ${on?'on':''}" data-n="${n}" ${sold?'disabled':''}>
         <div class="row"><b>${x.name}</b><span class="d">${sold?'Sold out':on?fmt(cur):(d>0?'+':'−')+fmt(Math.abs(d))}</span></div>
-        <p>${x.detail}. ${x.why}</p>
+        <p>${x.detail}. ${x.why}</p>${net}
         ${on||sold?(on?'<div class="after"><span class="pill pick">In your plan</span></div>':''):`<div class="after"><span class="pill ${nt>S.budget?'bad':'ok'}">Trip becomes ${fmt(nt)} · ${nt>S.budget?fmt(nt-S.budget)+' over':fmt(S.budget-nt)+' left'}</span></div>`}
       </button>`; }).join(''));
   sheet.querySelectorAll('.tier').forEach(b=>b.onclick=()=>{ const before={...S.tiers}, bx={...S.extra}, prev=undoSnap(), was=price(c); S.tiers[c]=+b.dataset.n; S.extra[c]=0; { const fr=was-price(c), r=receiver(c); if(fr>0&&r&&S.view==='plan') S.extra[r]+=fr; } narrate(before,bx); closeSheet(); if(onPick) return onPick(); if(S.view==='plan') offerUndo(prev); updatePlan(); });
@@ -838,19 +954,22 @@ function chip(k){
       closeSheet(); updatePlan(); });
     return;
   }
-  toast(k==='from'?'Other cities are outside this prototype.':'Group trips are outside this prototype.');
+  if(k==='who') return openPeople();
+  toast('Other cities are outside this prototype.');
 }
 
 /* ---------- 5. approve, with a mid-booking change ---------- */
 function viewApprove(mode){
   const t=total(), over=t-S.budget;
-  const bk=booked(), sx=asideSum();
-  const rows = CATS.map(c=>`<div class="sum"><span class="sw" style="background:${COLOR[c]};margin-top:6px"></span><div class="t"><b>${tier(c).name}</b><span>${detailOf(c)}</span><span>${tier(c).cancel||'Free cancellation until 24 hours before'}</span></div><div class="p">${fmt(priceOf(c,S.tiers[c]))}</div></div>`).join('');
+  const bk=booked(), sx=spendThere(), lc=localPP(tier('stay'));
+  const rows = CATS.map(c=>`<div class="sum"><span class="sw" style="background:${COLOR[c]};margin-top:6px"></span><div class="t"><b>${tier(c).name}</b><span>${detailOf(c)}${c==='stay'?' · '+tier(c).where:''}</span><span>${tier(c).cancel||'Free cancellation until 24 hours before'}</span></div><div class="p">${fmt(bookOf(c,S.tiers[c]))}</div></div>`).join('');
   const aside = sx ? `<div class="aside"><b>Set aside, not booked: ${fmt(sx)}</b><p>This stays in your account. I won't charge it now. It's your spending money for the trip, and I'll keep track of it while you're there.</p>
+      ${lc?`<div class="ar"><span>For autos from your stay</span><span>${fmt(lc)}</span></div>`:''}
       ${CATS.filter(c=>S.extra[c]).map(c=>`<div class="ar"><span>${XL[c].replace(/^for /,'For ')}</span><span>${fmt(S.extra[c])}</span></div>`).join('')}</div>` : '';
-  const totals = sx ? `<div class="totalrow"><span>Book now</span><span>${fmt(bk)}</span></div>
+  const totals = (sx ? `<div class="totalrow"><span>Book now</span><span>${fmt(bk)}</span></div>
       <div class="split"><span>Set aside to spend there</span><b>${fmt(sx)}</b></div>
-      <div class="split"><span>Weekend total</span><b>${fmt(t)}</b></div>` : `<div class="totalrow"><span>Total, all-in</span><span>${fmt(t)}</span></div>`;
+      <div class="split"><span>Weekend total</span><b>${fmt(t)}</b></div>` : `<div class="totalrow"><span>Total, all-in</span><span>${fmt(t)}</span></div>`)
+    + (ppl()>1 ? `<div class="split"><span>Prices are per person · for ${ppl()===2?"both":"all "+ppl()} of you</span><b>${fmt(t*ppl())}</b></div>` : '');
   let top='';
   if(mode==='changed'){
     const c=S.sold.cat, gone=D().cats[c][S.sold.tier];
@@ -890,7 +1009,7 @@ function viewLocked(){
   const mmss=()=>`${Math.floor(left/60)}:${String(left%60).padStart(2,'0')}`;
   app.innerHTML = `<div class="view pad" style="text-align:center">
     <div class="bigtick">✓</div><h1>All three held for <span id="cd">${mmss()}</span></h1>
-    <p class="muted small" style="margin:8px 20px 20px">${D().name}, ${fmt(booked())} all-in${asideSum()?`, plus ${fmt(asideSum())} set aside to spend there`:''}. The seat, the room and the activity slots are reserved together.</p>
+    <p class="muted small" style="margin:8px 20px 20px">${D().name}, ${fmt(booked())} all-in${spendThere()?`, plus ${fmt(spendThere())} set aside to spend there`:''}. The seat, the room and the activity slots are reserved together.</p>
     <div class="card" style="text-align:left">${CATS.map(c=>`<div class="sum"><span class="sw" style="background:${COLOR[c]};margin-top:6px"></span><div class="t"><b>${tier(c).name}</b><span>${tier(c).cancel||'Free cancellation until 24 hours before'}</span></div><div class="p">${fmt(priceOf(c,S.tiers[c]))}</div></div>`).join('')}</div>
     <div class="foot" style="padding-left:0;padding-right:0"><button class="btn" id="pay">Continue to payment</button><button class="btn ghost" id="again" style="margin-top:8px">Plan another weekend</button></div></div>`;
   S.timer=setInterval(()=>{ left--; const c=$('#cd'); if(!c||left<=0){clearInterval(S.timer);return;} c.textContent=mmss(); },1000);
