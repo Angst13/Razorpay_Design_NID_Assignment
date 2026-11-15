@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weekend Agent · Guided tour</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#008CFF;--navy:#0B3A8A;--ink:#111;--body:#3D4350;--mute:#7A8190;--panel:#F3F7FD;--soft:#E6F1FF;--line:#DDE5F0;--red:#EB2026;--good:#12805C;--goods:#E3F5EC}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{font-family:Lato,system-ui,-apple-system,"Segoe UI",sans-serif;background:#EEF2F8;color:var(--ink);display:flex;align-items:center;justify-content:center;gap:56px;padding:24px 16px;min-height:100vh}
+button{font:inherit;cursor:pointer}
+
+/* phone */
+.stagewrap{flex:none;position:relative}
+.phone{position:absolute;left:0;top:0;width:414px;height:868px;padding:12px;border-radius:56px;background:#14161C;box-shadow:0 30px 80px rgba(11,42,91,.28);transform-origin:0 0}
+.screen{position:relative;width:390px;height:844px;border-radius:44px;overflow:hidden;background:#fff}
+.screen iframe{border:0;width:390px;height:844px;display:block}
+.spot{position:absolute;left:0;top:0;width:0;height:0;border-radius:16px;box-shadow:0 0 0 3px var(--blue),0 0 0 9999px rgba(10,20,45,.45);pointer-events:none;opacity:0;transition:left .35s cubic-bezier(.3,.7,.2,1),top .35s cubic-bezier(.3,.7,.2,1),width .35s cubic-bezier(.3,.7,.2,1),height .35s cubic-bezier(.3,.7,.2,1),opacity .25s}
+.spot.on{opacity:1}
+.spot.on::after{content:"";position:absolute;inset:-3px;border-radius:18px;border:3px solid var(--blue);animation:pulse 1.6s ease-out infinite}
+@keyframes pulse{0%{opacity:.8;transform:scale(1)}100%{opacity:0;transform:scale(1.06)}}
+@media (prefers-reduced-motion:reduce){.spot{transition:none}.spot.on::after{animation:none}}
+
+/* panel */
+.panel{width:460px;max-width:100%}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:18px}
+.pill{background:var(--red);color:#fff;font-weight:900;font-size:16px;padding:6px 12px;border-radius:8px;transform:rotate(3deg)}
+.brand span:last-child{color:var(--mute);font-weight:700;font-size:15px;letter-spacing:.06em;text-transform:uppercase}
+.chapters{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.chapters button{border:1.5px solid var(--line);background:#fff;color:var(--body);border-radius:99px;padding:6px 12px;font-size:13.5px;font-weight:700}
+.chapters button.on{background:var(--soft);border-color:var(--blue);color:var(--navy)}
+.chapters button.done{color:var(--mute)}
+.card{background:#fff;border-radius:22px;padding:28px 28px 24px;box-shadow:0 10px 30px rgba(11,42,91,.08);min-height:330px}
+.count{font-size:13px;font-weight:900;color:var(--blue);letter-spacing:.08em;text-transform:uppercase}
+h1{font-size:30px;line-height:1.15;margin:10px 0 12px;letter-spacing:-.01em}
+.text{font-size:17px;line-height:1.55;color:var(--body);margin:0}
+.why{margin-top:16px;background:var(--panel);border-radius:14px;padding:14px 16px;font-size:15.5px;line-height:1.5;color:var(--navy)}
+.why b{display:block;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+.why.research{background:var(--goods);color:#0d4f3a}.why.research b{color:var(--good)}
+.try{margin-top:12px;display:flex;gap:10px;align-items:flex-start;font-size:15.5px;line-height:1.45;color:var(--ink);font-weight:700}
+.try::before{content:"👆";flex:none}
+.why:empty,.try:empty{display:none}
+.nav{display:flex;align-items:center;gap:14px;margin-top:18px}
+.nav button{border:0;border-radius:14px;padding:13px 20px;font-weight:900;font-size:16px}
+#prev{background:#fff;color:var(--navy);box-shadow:inset 0 0 0 1.5px var(--line)}
+#prev:disabled{opacity:.4;cursor:default}
+#next{background:linear-gradient(90deg,#53B2FE,#065AF3);color:#fff;margin-left:auto}
+.prog{flex:1;height:6px;background:#dfe6f1;border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s}
+.keys{color:var(--mute);font-size:14px;margin:14px 2px 0}
+.keys a{color:var(--blue);font-weight:700;text-decoration:none}
+kbd{font:inherit;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:5px;padding:0 5px;background:#fff}
+
+@media (max-width:980px){
+  body{flex-direction:column;gap:20px;justify-content:flex-start}
+  .panel{order:-1}
+  .card{min-height:0}
+}
+</style>
+</head>
+<body>
+<div class="stagewrap" id="stage">
+  <div class="phone" id="phone"><div class="screen"><iframe id="fr" title="Weekend Agent prototype"></iframe><div class="spot" id="spot"></div></div></div>
+</div>
+
+<main class="panel">
+  <div class="brand"><span class="pill">Weekend Agent</span><span>Guided tour</span></div>
+  <nav class="chapters" id="chapters" aria-label="Chapters"></nav>
+  <section class="card" aria-live="polite">
+    <div class="count" id="count"></div>
+    <h1 id="title"></h1>
+    <p class="text" id="text"></p>
+    <div class="why" id="why"></div>
+    <div class="try" id="try"></div>
+  </section>
+  <div class="nav"><button id="prev">← Back</button><div class="prog"><i id="prog"></i></div><button id="next">Next →</button></div>
+  <p class="keys"><kbd>←</kbd> <kbd>→</kbd> to move · the phone stays live, so tap and drag anything · <a href="index.html">Open the full prototype</a></p>
+</main>
+
+<script>
+/* Each step: ch chapter, h prototype deep link, sel element to spotlight, t title, d text,
+   why the reasoning, src 'research' when it comes from the user calls, try an invitation, act scripted setup. */
+const STEPS = [
+  {ch:'Ask', h:'', sel:'.banner', t:'It lives inside MakeMyTrip',
+   d:'Weekend Agent is a new entry on the MakeMyTrip home screen, not a separate app. The cards, tiles, nav bar and AI search box are MakeMyTrip’s own patterns.',
+   why:'People already plan trips here. The agent changes how you plan, not where.'},
+  {ch:'Ask', h:'', sel:'.modes', t:'Two ways in',
+   d:'“Find me a place” starts from a budget and lets the agent choose. “I know where I’m going” starts from a destination you already picked.',
+   why:'Two of the three people I spoke to picked the place first: Pondicherry from reels, Lonavala because it was close. The AI dry run had predicted everyone starts from a budget.', src:'research'},
+  {ch:'Ask', h:'', sel:'.aibox', t:'One sentence is enough',
+   d:'Type it the way you’d say it. The agent reads the budget, the group size and the place. “₹12K for both of us” becomes ₹6,000 each.',
+   why:'It plans first and asks nothing. You correct a plan instead of filling in a form.'},
+  {ch:'Ask', h:'', sel:'.starters', t:'Never a blank box',
+   d:'Three tappable asks show what the agent can do: a budget-first weekend, a couple with a place in mind, and a group splitting costs.',
+   try:'Next, we tap the first one.'},
+
+  {ch:'Agent works', h:'', sel:'#steps', block:'start', t:'It shows its work',
+   d:'No spinner. The agent lists what it’s checking, and what it dropped and why: “Dropped Varkala. The only return gets in at 2 am Monday.”',
+   why:'Trust comes from seeing the reasoning, including the options it threw away.',
+   act:(w,d,done)=>{ const b=d.querySelector('.starter'); if(b) b.click();
+     const iv=setInterval(()=>{ const n=d.querySelectorAll('#steps .step').length; if(n>=7 && !d.querySelector('#steps .run')){ try{w.eval("S.view='tour'");}catch(e){} clearInterval(iv);} },80);
+     setTimeout(done,200); }},
+
+  {ch:'Options', h:'v=options&b=15000', sel:'.lcard', block:'center', t:'Whole-trip prices',
+   d:'Each card is a complete weekend: travel, stay, food and activities, priced all-in with taxes. The badge says how much is left over, or how far over it goes.',
+   why:'All three people I spoke to went over their budget: by 16%, 25% and 30%.', src:'research'},
+  {ch:'Options', h:'v=options&b=15000', sel:'.lcard .mini', t:'The split, at a glance',
+   d:'The thin bar shows how each option spends the money: blue travel, orange stay, green things to do. Two trips at the same price can feel very different.'},
+  {ch:'Options', h:'v=options&b=15000', sel:'.lcard .insight', t:'Why this one',
+   d:'One line from the agent on why it suggests this trip, in plain words instead of a score.',
+   why:'People wanted a few options with reasons, not one AI answer and not twenty results.', src:'research'},
+  {ch:'Options', h:'v=options&b=15000', sel:'#askb', t:'Change anything by asking',
+   d:'The floating bar lets you steer without starting over: “only beaches”, “₹2K less”.'},
+
+  {ch:'Reshape', h:'v=plan&d=gokarna&b=15000', sel:'#bar', t:'The bar is your ₹15,000',
+   d:'The whole bar is the budget, split into Travel, Stay and Do. Drag a handle to move money. Only the part next to it gives way, so the bar always stays full.',
+   why:'One person asked for exactly this: “If I want to spend more on a hotel, it should show me what I can reduce elsewhere.”', src:'research',
+   try:'Drag a white handle on the bar left or right.'},
+  {ch:'Reshape', h:'v=plan&d=gokarna&b=15000', sel:'#chips', t:'Guesses you can correct',
+   d:'Leaving Friday night, from Bengaluru, one person. The agent guesses, shows the guess and lets you fix it. Changing the group size reprices rooms per person.',
+   try:'Tap “1 person” and pick 2.'},
+  {ch:'Reshape', h:'v=plan&d=gokarna&b=15000', sel:'#legend', t:'What every rupee buys',
+   d:'Each line says what’s booked. A cheaper stay further out shows the room plus the autos you’ll need, so you see the real trade-off.',
+   why:'In the calls, a farther hotel meant more spent on autos. The cheaper room only looked cheaper.', src:'research',
+   try:'Tap a line to swap that one piece. Nothing else moves.'},
+  {ch:'Reshape', h:'v=plan&d=gokarna&b=15000', sel:'#narr', t:'One line on what changed',
+   d:'After every change the agent says what it did and where the money came from: “Travel up to ₹10,800. Paid for from activities.” Every change can be undone for 5 seconds.'},
+  {ch:'Reshape', h:'v=plan&d=gokarna&b=15000', sel:'#buf', t:'A buffer for real life',
+   d:'About 10% is kept aside for food and surprises. It’s spending money, not booked, and it never gets charged.',
+   why:'In every call, money saved on one part went somewhere else: autos, activities, food. A buffer makes room for that.', src:'research'},
+  {ch:'Reshape', h:'v=plan&d=gokarna&b=15000', sel:'#days', block:'start', t:'The weekend, hour by hour',
+   d:'The itinerary updates as you move money: a pricier stay drops an activity, an upgrade adds one. Activities show how far they are from your stay.'},
+
+  {ch:'When it breaks', h:'v=plan&d=goa&t=000&b=15000&x=0,0,0', sel:'#fix', block:'center', t:'When nothing fits',
+   d:'Goa is ₹500 over even at its cheapest. The agent says so instead of hiding it, then offers fixes with the saving on each: leave Saturday morning, switch to Gokarna, or stretch the budget.',
+   try:'Pick a fix. Everything else stays as it is.'},
+
+  {ch:'Book', h:'v=approve&d=gokarna&b=15000', sel:'.card', block:'start', t:'Review before anything is booked',
+   d:'Every piece shows its cancellation terms. Checkout separates “Book now” from the money set aside to spend there.',
+   why:'“I wouldn’t want it to book anything automatically.” Nothing is charged at this step.', src:'research'},
+  {ch:'Book', h:'v=changed&d=pondy&b=15000', sel:'.alert', block:'start', t:'When it changes mid-booking',
+   d:'The room sells out while you review. The agent names exactly what changed, confirms travel and activities are held, and offers replacements for that one piece with the new total.',
+   why:'All three are held together, so you never end up with half a trip.'},
+  {ch:'Book', h:'', sel:'.aibox', t:'That’s the whole journey',
+   d:'From one sentence to a held booking, with the budget visible and editable the whole way. Now try it with your own numbers.',
+   try:'Type a budget in the box, or open the full prototype below.'}
+];
+
+const $=s=>document.querySelector(s);
+const fr=$('#fr'), spot=$('#spot');
+let cur=-1, loaded=null, live=null;
+const chapters=[...new Set(STEPS.map(s=>s.ch))];
+
+$('#chapters').innerHTML=chapters.map(c=>`<button data-c="${c}">${c}</button>`).join('');
+$('#chapters').querySelectorAll('button').forEach(b=>b.onclick=()=>go(STEPS.findIndex(s=>s.ch===b.dataset.c)));
+
+function fit(){
+  const wide=innerWidth>980;
+  const availH=wide?innerHeight-48:Math.min(innerHeight*0.72,868);
+  const availW=wide?innerWidth*0.45:innerWidth-32;
+  const s=Math.min(1,availH/868,availW/414);
+  $('#phone').style.transform=`scale(${s})`;
+  $('#stage').style.width=414*s+'px'; $('#stage').style.height=868*s+'px';
+}
+addEventListener('resize',fit); fit();
+
+function go(i){
+  i=Math.max(0,Math.min(STEPS.length-1,i)); cur=i; const s=STEPS[i];
+  $('#count').textContent=`${s.ch} · Step ${i+1} of ${STEPS.length}`;
+  $('#title').textContent=s.t; $('#text').textContent=s.d;
+  const why=$('#why'); why.className='why'+(s.src==='research'?' research':'');
+  why.innerHTML=s.why?`<b>${s.src==='research'?'From the user calls':'Why'}</b>${s.why}`:'';
+  $('#try').textContent=s.try||'';
+  $('#prev').disabled=i===0; $('#next').textContent=i===STEPS.length-1?'Start over ↺':'Next →';
+  $('#prog').style.width=((i+1)/STEPS.length*100)+'%';
+  const ci=chapters.indexOf(s.ch);
+  $('#chapters').querySelectorAll('button').forEach((b,k)=>{b.classList.toggle('on',k===ci);b.classList.toggle('done',k<ci);});
+  try{history.replaceState(null,'','#'+(i+1));}catch(e){}
+  spot.classList.remove('on'); live=null;
+  const key=s.act?'act'+i:s.h;
+  if(key!==loaded){ loaded=key; fr.onload=()=>prep(s,i); fr.src='index.html?tour='+Date.now()+'#embed'+(s.h?'&'+s.h:''); }
+  else prep(s,i);
+}
+function prep(s,i){
+  if(i!==cur) return;
+  const w=fr.contentWindow, d=fr.contentDocument;
+  const show=()=>{ if(i!==cur) return; const el=d.querySelector(s.sel); if(el) el.scrollIntoView({block:s.block||'center'}); live=s.sel; setTimeout(place,60); };
+  if(s.act) s.act(w,d,show); else setTimeout(show,180);
+}
+function place(){
+  if(!live) return; let d; try{d=fr.contentDocument;}catch(e){return;}
+  const el=d&&d.querySelector(live); const r=el&&el.getBoundingClientRect();
+  if(!r||!r.width){spot.classList.remove('on');return;}
+  const p=6, top=Math.max(-p,r.top-p), bot=Math.min(844+p,r.bottom+p);
+  if(bot-top<12){spot.classList.remove('on');return;}
+  Object.assign(spot.style,{left:(r.left-p)+'px',top:top+'px',width:(r.width+2*p)+'px',height:(bot-top)+'px'});
+  spot.classList.add('on');
+}
+setInterval(place,300);
+
+$('#prev').onclick=()=>go(cur-1);
+$('#next').onclick=()=>go(cur===STEPS.length-1?0:cur+1);
+addEventListener('keydown',e=>{ if(e.target.closest&&e.target.closest('input,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1); });
+fr.addEventListener('load',()=>{ try{ fr.contentDocument.addEventListener('keydown',e=>{ if(e.target.matches('input,textarea'))return; if(e.key==='ArrowRight')go(cur+1); if(e.key==='ArrowLeft')go(cur-1); }); }catch(e){} });
+
+addEventListener('hashchange',()=>{ const n=(parseInt(location.hash.slice(1))||1)-1; if(n!==cur) go(n); });
+go((parseInt(location.hash.slice(1))||1)-1);
+</script>
+</body>
+</html>
