@@ -89,7 +89,7 @@ const STEPS = [
    why:'People already plan trips here. The agent changes how you plan, not where.'},
   {ch:'Ask', h:'', sel:'.modes', t:'Two ways in',
    d:'“Find me a place” starts from a budget and lets the agent choose. “I know where I’m going” starts from a destination you already picked.',
-   why:'Two of the three people I spoke to picked the place first: Pondicherry from reels, Lonavala because it was close. The AI dry run had predicted everyone starts from a budget.', src:'research'},
+   why:'Two of the three people I spoke to picked the place first: Pondicherry from reels, Varkala because it was close. The AI dry run had predicted everyone starts from a budget.', src:'research'},
   {ch:'Ask', h:'', sel:'.aibox', t:'One sentence is enough',
    d:'Type it the way you’d say it. The agent reads the budget, the group size and the place. “₹12K for both of us” becomes ₹6,000 each.',
    why:'It plans first and asks nothing. You correct a plan instead of filling in a form.'},
@@ -98,7 +98,7 @@ const STEPS = [
    try:'Next, we tap the first one.'},
 
   {ch:'Agent works', h:'', sel:'#steps', block:'start', t:'It shows its work',
-   d:'No spinner. The agent lists what it’s checking, and what it dropped and why: “Dropped Varkala. The only return gets in at 2 am Monday.”',
+   d:'No spinner. The agent lists what it’s checking, and what it dropped and why: “Dropped Kovalam. The only return gets in at 2 am Monday.”',
    why:'Trust comes from seeing the reasoning, including the options it threw away.',
    act:(w,d,done)=>{ const b=d.querySelector('.starter'); if(b) b.click();
      const iv=setInterval(()=>{ const n=d.querySelectorAll('#steps .step').length; if(n>=7 && !d.querySelector('#steps .run')){ try{w.eval("S.view='tour'");}catch(e){} clearInterval(iv);} },80);
